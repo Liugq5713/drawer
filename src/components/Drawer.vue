@@ -1,8 +1,8 @@
 <template>
-  <div class="rightPanel-container" :class="{show:show}">
-    <div class="rightPanel-background"/>
-    <div class="rightPanel">
-      <div class="btn--wrapper" @click="open">
+  <div class="drawer" :class="{'drawer--show':show}">
+    <div class="drawer-bg"/>
+    <div class="panel">
+      <div class="control" @click="open">
         <slot>
           <div>
             <span style="writing-mode: vertical-rl;">{{show?'隐藏':'显示'}}</span>
@@ -29,11 +29,6 @@ export default {
       show: false
     };
   },
-  watch: {
-    show() {
-      document.body.classList.toggle("showRightPanel");
-    }
-  },
   mounted() {
     window.addEventListener("click", this.closeSidebar);
   },
@@ -45,7 +40,7 @@ export default {
       this.show = !this.show;
     },
     closeSidebar(evt) {
-      const parent = evt.target.closest(".rightPanel");
+      const parent = evt.target.closest(".panel");
       if (!parent) {
         this.show = false;
       }
@@ -55,65 +50,59 @@ export default {
 </script>
 
 <style scoped>
-.showRightPanel {
-  position: relative;
-  width: calc(100% - 20px);
-}
-
-.rightPanel-background {
-  opacity: 0;
-  transition: opacity 0.3s cubic-bezier(0.7, 0.3, 0.1, 1);
-  background: rgba(0, 0, 0, 0.2);
-  width: 0;
-  height: 0;
-  top: 0;
-  left: 0;
-  position: fixed;
-  z-index: -1;
-}
-.rightPanel {
-  background: #fff;
-  z-index: 3000;
-  position: fixed;
-  height: 100vh;
-  width: 100%;
-  max-width: 700px;
-  top: 0px;
-  left: 0px;
-  box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.05);
-  transition: all 0.25s cubic-bezier(0.7, 0.3, 0.1, 1);
-  transform: translate(100%);
-  z-index: 40000;
-  left: auto;
-  right: 0px;
-}
-
-.rightPanel >>> .el-button {
-  padding: 12px 10px;
-}
-
-.btn--wrapper {
-  position: absolute;
-  left: -40px;
-  right: 0;
-  top: 30vh;
-  width: 40px;
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-  height: 200px;
-}
-.show {
+.drawer--show {
   transition: all 0.3s cubic-bezier(0.7, 0.3, 0.1, 1);
 }
 
-.show .rightPanel-background {
+.drawer--show .drawer-bg {
   z-index: 20000;
   opacity: 1;
   width: 100%;
   height: 100%;
 }
-.show .rightPanel {
+
+.drawer--show .panel {
   transform: translate(0);
+}
+.drawer-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.7, 0.3, 0.1, 1);
+  background: rgba(0, 0, 0, 0.2);
+  z-index: -1;
+}
+
+.panel {
+  height: 100vh;
+  width: 100%;
+  max-width: 700px;
+  position: fixed;
+  top: 0px;
+  right: 0px;
+  box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.05);
+  transition: all 0.25s cubic-bezier(0.7, 0.3, 0.1, 1);
+  transform: translate(100%);
+  background: #fff;
+  z-index: 40000;
+}
+
+.control {
+  width: 40px;
+  padding: 10px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: absolute;
+  top: 30vh;
+  left: -40px;
+  right: 0;
+  color: #606266;
+  background-color: #fff;
+  border: 1px solid #dcdfe6;
+  border-right: 0;
+  cursor: pointer;
 }
 </style>
