@@ -2,22 +2,15 @@
   <div class="rightPanel-container" :class="{show:show}">
     <div class="rightPanel-background"/>
     <div class="rightPanel">
-      <div class="btn--wrapper">
-        <slot >
-        <el-button size="mini" style="margin-left:-0px" @click="open">
-          <span style="writing-mode: vertical-rl;">
-            <i
-              :class="show?'el-icon-arrow-right':'el-icon-arrow-left'"
-              class="el-icon-arrow-left"
-              style="margin-bottom:4px"
-            ></i>
-            {{show?'隐藏':'显示'}}
-          </span>
-        </el-button>
+      <div class="btn--wrapper" @click="open">
+        <slot>
+          <div>
+            <span style="writing-mode: vertical-rl;">{{show?'隐藏':'显示'}}</span>
+          </div>
         </slot>
       </div>
       <div class="page" v-if="show">
-        <slot />
+        <slot/>
       </div>
     </div>
   </div>
@@ -25,11 +18,11 @@
 
 <script>
 export default {
-  prop:{
-    show:{
-      type:Boolean,
-      default:false
-    },
+  prop: {
+    show: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
@@ -56,7 +49,7 @@ export default {
       if (!parent) {
         this.show = false;
       }
-    },
+    }
   }
 };
 </script>
