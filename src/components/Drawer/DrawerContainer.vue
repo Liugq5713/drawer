@@ -1,0 +1,94 @@
+<template>
+  <div>
+    <Drawer :drawerStyle="drawerStyle[position]" :controlStyle="controlStyle[position]"></Drawer>
+  </div>
+</template>
+
+<script>
+import Drawer from "./Drawer";
+export default {
+  props: {
+    position: {
+      type: String,
+      validator: function(value) {
+        return ["top", "right", "bottom", "left"].indexOf(value) !== -1;
+      }
+    },
+    controlOffset: {
+      type: String,
+      default: "400px"
+    },
+    contentSize: {
+      type: String,
+      default: "300px"
+    }
+  },
+  components: {
+    Drawer
+  },
+  data() {
+    return {
+      drawerStyle: {
+        top: {
+          height: "100%",
+          width: "100vw",
+          transform: "translate(0, -100%)",
+          maxHeight: this.contentSize,
+          top: 0,
+          left: 0,
+          backgroundColor: "#000"
+        },
+        right: {
+          height: "100vh",
+          width: "100%",
+          transform: "translate(100%,0)",
+          maxWidth: this.contentSize,
+          top: 0,
+          right: 0,
+          backgroundColor: "#000"
+        },
+        bottom: {
+          height: "100%",
+          width: "100vw",
+          transform: "translate(0, 100%)",
+          maxHeight: this.contentSize,
+          bottom: 0,
+          left: 0,
+          backgroundColor: "#000"
+        },
+        left: {
+          height: "100vh",
+          width: "100%",
+          maxWidth: this.contentSize,
+          transform: "translate(-100%,0 )",
+          top: 0,
+          left: 0,
+          backgroundColor: "#000"
+        }
+      },
+      controlStyle: {
+        top: {
+          left: this.controlOffset,
+          bottom: "-40px",
+          borderTop: 0
+        },
+        right: {
+          top: this.controlOffset,
+          left: "-40px",
+          borderRight: 0
+        },
+        bottom: {
+          left: this.controlOffset,
+          top: "-40px",
+          borderBottom: 0
+        },
+        left: {
+          top: this.controlOffset,
+          right: "-40px",
+          borderLeft: 0
+        }
+      }
+    };
+  }
+};
+</script>
