@@ -54,7 +54,7 @@ controls   |                       |
 
 ```css
 .drawer__container--show .drawer {
-  transform: translate(0) !important;
+  transform: translate(0);
 }
 ```
 
@@ -96,6 +96,10 @@ transition: opacity 0.3s cubic-bezier(0.7, 0.3, 0.1, 1);
 
 ## props
 
+我们需要`defaultShow`控制抽屉的展开。
+
 ## 钩子
+
+`openDrawer`控制是否抽屉被打开
 
 ## 事件
