@@ -1,6 +1,11 @@
 <template>
   <div>
-    <Drawer :drawerStyle="drawerStyle[position]" :controlStyle="controlStyle[position]"></Drawer>
+    <Drawer :drawerStyle="drawerStyle[position]" :controlStyle="controlStyle[position]">
+      <slot></slot>
+      <template #controls>
+        <slot name="controls"></slot>
+      </template>
+    </Drawer>
   </div>
 </template>
 
@@ -36,7 +41,7 @@ export default {
           maxHeight: this.contentSize,
           top: 0,
           left: 0,
-          backgroundColor: "#000"
+          backgroundColor: "#b9b9b9"
         },
         right: {
           height: "100vh",
@@ -45,7 +50,7 @@ export default {
           maxWidth: this.contentSize,
           top: 0,
           right: 0,
-          backgroundColor: "#000"
+          backgroundColor: "#b9b9b9"
         },
         bottom: {
           height: "100%",
@@ -54,7 +59,7 @@ export default {
           maxHeight: this.contentSize,
           bottom: 0,
           left: 0,
-          backgroundColor: "#000"
+          backgroundColor: "#b9b9b9"
         },
         left: {
           height: "100vh",
@@ -63,7 +68,7 @@ export default {
           transform: "translate(-100%,0 )",
           top: 0,
           left: 0,
-          backgroundColor: "#000"
+          backgroundColor: "#b9b9b9"
         }
       },
       controlStyle: {
@@ -74,8 +79,9 @@ export default {
         },
         right: {
           top: this.controlOffset,
-          left: "-40px",
-          borderRight: 0
+          left: "-60px",
+          borderRight: 0,
+          writingMode: "vertical-rl"
         },
         bottom: {
           left: this.controlOffset,
@@ -84,8 +90,9 @@ export default {
         },
         left: {
           top: this.controlOffset,
-          right: "-40px",
-          borderLeft: 0
+          right: "-20px",
+          borderLeft: 0,
+          writingMode: "vertical-rl"
         }
       }
     };

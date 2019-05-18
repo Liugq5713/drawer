@@ -2,10 +2,10 @@
   <div class="drawer__container" :class="{'drawer__container--show':show}">
     <div class="drawer__container-bg"/>
     <div class="drawer" :style="drawerStyle">
-      <div class="controls" :style="controlStyle" @click="open">
-        <slot>
+      <div class="controls" ref="controls" :style="controlStyle" @click="open">
+        <slot name="controls">
           <div>
-            <span style="writing-mode: vertical-rl;">{{show?'隐藏':'显示'}}</span>
+            <span>{{show?'隐藏':'显示'}}</span>
           </div>
         </slot>
       </div>
@@ -92,7 +92,6 @@ export default {
 
 .controls {
   position: absolute;
-  width: 40px;
   padding: 10px;
   box-sizing: border-box;
   display: flex;
@@ -102,5 +101,8 @@ export default {
   background-color: #fff;
   border: 1px solid #dcdfe6;
   cursor: pointer;
+}
+.content {
+  padding: 10px;
 }
 </style>
