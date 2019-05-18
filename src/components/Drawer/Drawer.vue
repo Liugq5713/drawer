@@ -23,6 +23,10 @@ export default {
     //   type: Boolean,
     //   default: false
     // },
+    position: {
+      type: String,
+      required: true
+    },
     drawerStyle: {
       type: Object,
       required: true
@@ -38,6 +42,20 @@ export default {
     };
   },
   mounted() {
+    const rect = this.$refs["controls"].getBoundingClientRect();
+    if (this.position === "top") {
+      this.$refs["controls"].style["bottom"] = `-${rect.height}px`;
+    }
+    if (this.position === "bottom") {
+      this.$refs["controls"].style["top"] = `-${rect.height}px`;
+    }
+    if (this.position === "right") {
+      console.log("rect", rect);
+      this.$refs["controls"].style["left"] = `-${rect.width}px`;
+    }
+    if (this.position === "left") {
+      this.$refs["controls"].style["right"] = `-${rect.width}px`;
+    }
     window.addEventListener("click", this.closeSidebar);
   },
   destroyed() {
@@ -63,14 +81,15 @@ export default {
 }
 
 .drawer__container--show .drawer__container-bg {
-  z-index: 20000;
   opacity: 1;
   width: 100%;
   height: 100%;
+  z-index: 20001;
 }
 
 .drawer__container--show .drawer {
   transform: translate(0) !important;
+  z-index: 40000;
 }
 .drawer__container-bg {
   position: fixed;
@@ -87,16 +106,13 @@ export default {
   box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.05);
   transition: height 0.25s cubic-bezier(0.7, 0.3, 0.1, 1);
   background: #fff;
-  z-index: 40000;
+  z-index: 20000;
 }
 
 .controls {
   position: absolute;
   padding: 10px;
   box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   color: #606266;
   background-color: #fff;
   border: 1px solid #dcdfe6;

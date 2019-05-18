@@ -1,6 +1,10 @@
 <template>
   <div>
-    <Drawer :drawerStyle="drawerStyle[position]" :controlStyle="controlStyle[position]">
+    <Drawer
+      :position="position"
+      :drawerStyle="drawerStyle[position]"
+      :controlStyle="controlStyle[position]"
+    >
       <slot></slot>
       <template #controls>
         <slot name="controls"></slot>
@@ -74,25 +78,21 @@ export default {
       controlStyle: {
         top: {
           left: this.controlOffset,
-          bottom: "-40px",
           borderTop: 0
         },
         right: {
           top: this.controlOffset,
-          left: "-60px",
-          borderRight: 0,
-          writingMode: "vertical-rl"
+          borderRight: 0
+          // writingMode: "vertical-rl"
         },
         bottom: {
           left: this.controlOffset,
-          top: "-40px",
           borderBottom: 0
         },
         left: {
           top: this.controlOffset,
-          right: "-20px",
-          borderLeft: 0,
-          writingMode: "vertical-rl"
+          borderLeft: 0
+          // writingMode: "vertical-rl"
         }
       }
     };

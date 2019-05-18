@@ -70,3 +70,32 @@ controls   |                       |
 ```
 
 ## 样式调整
+
+### 控件
+
+使得控件完全贴合内容区，不会因为控件的内容而使得控件显示不完全，或者脱离内容区。
+
+这种情况当然是使用万能的 JavaScript 了啊。还是拿右侧抽屉举例子:
+
+```js
+// 获取控件的宽高
+const rect = this.$refs['controls'].getBoundingClientRect()
+if (this.position === 'right') {
+  // 重新设置偏移量
+  this.$refs['controls'].style['left'] = `-${rect.width}px`
+}
+```
+
+### 动画
+
+[贝塞尔曲线](https://developer.mozilla.org/en-US/docs/Web/CSS/timing-function)了解一下
+
+```css
+transition: opacity 0.3s cubic-bezier(0.7, 0.3, 0.1, 1);
+```
+
+## props
+
+## 钩子
+
+## 事件
