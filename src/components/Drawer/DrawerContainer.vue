@@ -1,6 +1,7 @@
 <template>
   <div>
     <Drawer
+      :triggerEvent="triggerEvent"
       :position="position"
       :drawerStyle="drawerStyle[position]"
       :controlStyle="controlStyle[position]"
@@ -17,6 +18,10 @@
 import Drawer from "./Drawer";
 export default {
   props: {
+    triggerEvent: {
+      type: String,
+      default: "click"
+    },
     position: {
       type: String,
       validator: function(value) {
@@ -30,6 +35,9 @@ export default {
     contentSize: {
       type: String,
       default: "300px"
+    },
+    openDrawer: {
+      type: Function
     }
   },
   components: {

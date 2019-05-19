@@ -123,6 +123,19 @@ closeSidebar(evt) {
 window.addEventListener('click', this.closeSidebar)
 ```
 
-我一开始的做法是，组件挂载的时候，全局监听点击事件，组件销毁时移除点击事件。但我们可以做的更好，当 controls 被点击时，添加点击事件，收起抽屉的时候，移除点击事件。
+我一开始的做法是，组件挂载的时候，全局监听点击事件，组件销毁时移除点击事件。但我们可以做的更好，当 controls 被点击时，添加点击事件，收起抽屉的时候，移除点击事件。减少全局监听的 click 事件。
 
-除了点击事件，我们也顺便支持一下 hover 的操作
+除了点击事件，我们也顺便支持一下 hover 的操作。鼠标移出收起的操作和点击抽屉外部分收起的代码相同。
+
+通过`e.type`判断是点击事件还是鼠标移入事件。
+
+```js
+ toggleDrawerShow(e) {
+    if (e.type === "mouseover" && this.triggerEvent === "mouseover") {
+      // do some thing
+    }
+    if (e.type === "click" && this.triggerEvent === "click") {
+      // do some thing
+    }
+}
+```

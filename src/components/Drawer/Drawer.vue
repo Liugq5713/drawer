@@ -25,6 +25,9 @@
 <script>
 export default {
   props: {
+    triggerEvent: {
+      type: String
+    },
     // show: {
     //   type: Boolean,
     //   default: false
@@ -50,8 +53,7 @@ export default {
   watch: {
     show(value) {
       if (value && !this.clickNotClose) {
-        // this.addClickEvent();
-        this.addMouseoverEvent();
+        this.addCloseSidebarListener();
       }
     }
   },
@@ -64,7 +66,6 @@ export default {
       this.$refs["controls"].style["top"] = `-${rect.height}px`;
     }
     if (this.position === "right") {
-      console.log("rect", rect);
       this.$refs["controls"].style["left"] = `-${rect.width}px`;
     }
     if (this.position === "left") {
@@ -72,31 +73,41 @@ export default {
     }
   },
   destroyed() {
-    this.removeClickEvent();
+    this.removeCloseSidebarListener();
   },
   methods: {
-    toggleDrawerShow() {
-      this.show = !this.show;
+    toggleDrawerShow(e) {
+      if (e.type === "mouseover" && this.triggerEvent === "mouseover") {
+        this.show = !this.show;
+        return;
+      }
+      if (e.type === "click" && this.triggerEvent === "click") {
+        this.show = !this.show;
+        return;
+      }
     },
     closeSidebar(evt) {
       const parent = evt.target.closest(".drawer");
       if (!parent) {
         this.show = false;
-        this.removeMouseoverEvent();
-        this.removeClickEvent();
+        this.removeCloseSidebarListener();
       }
     },
-    addClickEvent() {
-      window.addEventListener("click", this.closeSidebar);
+    addCloseSidebarListener() {
+      if (this.triggerEvent === "click") {
+        window.addEventListener("click", this.closeSidebar);
+      }
+      if (this.triggerEvent === "mouseover") {
+        window.addEventListener("mouseover", this.closeSidebar);
+      }
     },
-    addMouseoverEvent() {
-      window.addEventListener("mouseover", this.closeSidebar);
-    },
-    removeMouseoverEvent() {
-      window.addEventListener("mouseover", this.closeSidebar);
-    },
-    removeClickEvent() {
-      window.removeEventListener("click", this.closeSidebar);
+    removeCloseSidebarListener() {
+      if (this.triggerEvent === "click") {
+        window.removeEventListener("click", this.closeSidebar);
+      }
+      if (this.triggerEvent === "mouseover") {
+        window.removeEventListener("mouseover", this.closeSidebar);
+      }
     }
   }
 };

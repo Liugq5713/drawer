@@ -17,6 +17,7 @@
       </template>
     </Drawer>
     <Drawer
+      triggerEvent="mouseover"
       position="right"
       controlOffset="30vh"
       contentSize="600px"
