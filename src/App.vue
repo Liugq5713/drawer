@@ -33,7 +33,8 @@ export default {
   name: "app",
   components: {
     Drawer
-  }
+  },
+  methods: {}
 };
 </script>
 

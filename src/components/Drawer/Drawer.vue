@@ -2,7 +2,13 @@
   <div class="drawer__container" :class="{'drawer__container--show':show}">
     <div class="drawer__container-bg"/>
     <div class="drawer" :style="drawerStyle">
-      <div class="controls" ref="controls" :style="controlStyle" @click="open" @mouseover="open">
+      <div
+        class="controls"
+        ref="controls"
+        :style="controlStyle"
+        @click="toggleDrawerShow"
+        @mouseover="toggleDrawerShow"
+      >
         <slot name="controls">
           <div>
             <span>{{show?'隐藏':'显示'}}</span>
@@ -44,7 +50,8 @@ export default {
   watch: {
     show(value) {
       if (value && !this.clickNotClose) {
-        this.addClickEvent();
+        // this.addClickEvent();
+        this.addMouseoverEvent();
       }
     }
   },
@@ -68,18 +75,25 @@ export default {
     this.removeClickEvent();
   },
   methods: {
-    open() {
+    toggleDrawerShow() {
       this.show = !this.show;
     },
     closeSidebar(evt) {
       const parent = evt.target.closest(".drawer");
       if (!parent) {
         this.show = false;
+        this.removeMouseoverEvent();
         this.removeClickEvent();
       }
     },
     addClickEvent() {
       window.addEventListener("click", this.closeSidebar);
+    },
+    addMouseoverEvent() {
+      window.addEventListener("mouseover", this.closeSidebar);
+    },
+    removeMouseoverEvent() {
+      window.addEventListener("mouseover", this.closeSidebar);
     },
     removeClickEvent() {
       window.removeEventListener("click", this.closeSidebar);

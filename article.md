@@ -124,3 +124,5 @@ window.addEventListener('click', this.closeSidebar)
 ```
 
 我一开始的做法是，组件挂载的时候，全局监听点击事件，组件销毁时移除点击事件。但我们可以做的更好，当 controls 被点击时，添加点击事件，收起抽屉的时候，移除点击事件。
+
+除了点击事件，我们也顺便支持一下 hover 的操作
