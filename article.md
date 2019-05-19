@@ -20,7 +20,7 @@ controls   |                       |
            +-----------------------+
 ```
 
-不以规矩，不成方圆。HTML 有语义化标签，CSS 有 BEM 规范，这些规范都帮助我们写出结构清晰的 HTML 架构。
+不以规矩，不成方圆。HTML 有语义化标签，CSS 有 BEM 规范，这些规范都帮助我们写出结构清晰的 HTML 架构。组件 HTML 结构如下：
 
 ```html
 <div class="drawer-container">
@@ -33,7 +33,7 @@ controls   |                       |
 
 ## 如何实现抽屉的效果
 
-我们拿贴在右侧的抽屉(实际代码与它不完全相同)举例：
+作为一个优秀的组件，我们支持了抽屉放置在网页上下左右的边缘。我们拿贴在右侧的抽屉(实际代码与它不完全相同)举例：
 
 ### 抽屉的展开收起
 
@@ -103,3 +103,24 @@ transition: opacity 0.3s cubic-bezier(0.7, 0.3, 0.1, 1);
 `openDrawer`控制是否抽屉被打开
 
 ## 事件
+
+作为一个优秀的组件，我们支持当抽屉打开后，点击抽屉外部分收起。
+
+```js
+closeSidebar(evt) {
+  // Element.closest() 方法用来获取：匹配特定选择器且离当前元素最近的祖先元素（也可以是当前元素本身）。如果匹配不到，则返回 null。
+  const parent = evt.target.closest(".drawer");
+  // 点击抽屉以外部分，即匹配不到，parent值为null
+  if (!parent) {
+    this.show = false;
+  }
+}
+```
+
+全局监听点击事件
+
+```js
+window.addEventListener('click', this.closeSidebar)
+```
+
+我一开始的做法是，组件挂载的时候，全局监听点击事件，组件销毁时移除点击事件。但我们可以做的更好，当 controls 被点击时，添加点击事件，收起抽屉的时候，移除点击事件。

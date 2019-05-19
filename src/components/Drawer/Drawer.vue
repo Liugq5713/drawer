@@ -2,7 +2,7 @@
   <div class="drawer__container" :class="{'drawer__container--show':show}">
     <div class="drawer__container-bg"/>
     <div class="drawer" :style="drawerStyle">
-      <div class="controls" ref="controls" :style="controlStyle" @click="open">
+      <div class="controls" ref="controls" :style="controlStyle" @click="open" @mouseover="open">
         <slot name="controls">
           <div>
             <span>{{show?'隐藏':'显示'}}</span>
@@ -41,6 +41,13 @@ export default {
       show: false
     };
   },
+  watch: {
+    show(value) {
+      if (value && !this.clickNotClose) {
+        this.addClickEvent();
+      }
+    }
+  },
   mounted() {
     const rect = this.$refs["controls"].getBoundingClientRect();
     if (this.position === "top") {
@@ -56,10 +63,9 @@ export default {
     if (this.position === "left") {
       this.$refs["controls"].style["right"] = `-${rect.width}px`;
     }
-    window.addEventListener("click", this.closeSidebar);
   },
   destroyed() {
-    window.removeEventListener("click", this.closeSidebar);
+    this.removeClickEvent();
   },
   methods: {
     open() {
@@ -69,7 +75,14 @@ export default {
       const parent = evt.target.closest(".drawer");
       if (!parent) {
         this.show = false;
+        this.removeClickEvent();
       }
+    },
+    addClickEvent() {
+      window.addEventListener("click", this.closeSidebar);
+    },
+    removeClickEvent() {
+      window.removeEventListener("click", this.closeSidebar);
     }
   }
 };
