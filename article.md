@@ -94,13 +94,26 @@ if (this.position === 'right') {
 transition: opacity 0.3s cubic-bezier(0.7, 0.3, 0.1, 1);
 ```
 
+### 滚动条
+
+当内容过长的时候，打开抽屉的时候，滚动条还在。因此我们需要在抽屉打开的时候打开滚动条。代码也很好写，给`document.body`添加`overflow:hidden`属性。这里有一个小小的坑。原先的 css 是置于 scope 里面的，如果想要把这个属性添加到 body 上，是不成功的。把 scoped 去了即可。
+
+```css
+<style scoped>
+.hidden_scoll_bar{
+  overflow: hidden;
+}
+</style>
+
+```
+
 ## props
 
 我们需要`defaultShow`控制抽屉的展开。
 
 ## 钩子
 
-`openDrawer`控制是否抽屉被打开
+`openDrawer`控制是否抽屉被打开。这里的实现方式，类似事件委托。
 
 ## 事件
 

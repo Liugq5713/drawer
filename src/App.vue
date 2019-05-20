@@ -1,29 +1,28 @@
 <template>
   <div id="app">
-    <Drawer position="top" controlOffset="300px" contentSize="200px">
-      <template #controls>
+    <Drawer
+      position="top"
+      :controls="controls"
+      controlOffset="300px"
+      contentSize="200px"
+      :openDrawer="openDrawer"
+    >
+      <template v-slot:control="control">
         <div class="button margin-left--10">
-          <div>hello</div>
-          <span>Here might be a page title</span>
-        </div>
-        <div class="button margin-left--10">
-          <div>hello</div>
-          <span>Here might be a page title</span>
-        </div>
-        <div class="button margin-left--10">
-          <div>hello</div>
+          <div>点击展开{{control}}</div>
           <span>Here might be a page title</span>
         </div>
       </template>
     </Drawer>
     <Drawer
-      triggerEvent="mouseover"
       position="right"
+      :controls="controls"
       controlOffset="30vh"
       contentSize="600px"
     >Lorem ipsum dolor sit amet consectetur, adipisicing elit. Autem iste non cupiditate harum, minima rerum omnis consequatur sequi sed inventore quae consequuntur fuga asperiores dolore esse, amet facere, similique laborum?</Drawer>
     <Drawer position="bottom" controlOffset="300px" contentSize="200px"/>
     <Drawer position="left" controlOffset="300px" contentSize="200px"/>
+    <div style="height:1000px;width:100px"></div>
   </div>
 </template>
 
@@ -35,7 +34,25 @@ export default {
   components: {
     Drawer
   },
-  methods: {}
+  data() {
+    return {
+      controls: [
+        {
+          show: "显示",
+          hidden: "隐藏"
+        },
+        {
+          show: "show",
+          hidden: "hidden"
+        }
+      ]
+    };
+  },
+  methods: {
+    openDrawer(e) {
+      console.log("app", e);
+    }
+  }
 };
 </script>
 
@@ -61,6 +78,10 @@ export default {
   padding: 12px 20px;
   font-size: 14px;
   border-radius: 4px;
+}
+
+.button:hover {
+  background-color: rgb(139, 135, 135);
 }
 .margin-left--10 {
   margin-left: 10px;

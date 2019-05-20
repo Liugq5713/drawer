@@ -1,2 +1,2 @@
-import DrawerContainer from './DrawerContainer'
-export default DrawerContainer
+import Drawer from './Drawer.vue'
+export default Drawer

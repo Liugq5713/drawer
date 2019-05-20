@@ -1,19 +1,23 @@
 <template>
-  <div class="drawer__container" :class="{'drawer__container--show':show}">
+  <div class="drawer__container" :class="[positionClass,{'drawer__container--show':show}]">
     <div class="drawer__container-bg"/>
-    <div class="drawer" :style="drawerStyle">
+    <div ref="drawer" class="drawer">
       <div
-        class="controls"
+        class="controls__container"
         ref="controls"
-        :style="controlStyle"
         @click="toggleDrawerShow"
-        @mouseover="toggleDrawerShow"
+        @mouseover="toggleDrawerShowByMouseover"
       >
-        <slot name="controls">
-          <div>
-            <span>{{show?'隐藏':'显示'}}</span>
-          </div>
-        </slot>
+        <ul class="controls">
+          <li v-for="(control,idx) in controlItems" class="control" :key="idx">
+            <template v-if="show">
+              <slot name="control" v-bind:control="control">{{control.hidden}}</slot>
+            </template>
+            <template v-else>
+              <slot name="control" v-bind:control="control">{{control.show}}</slot>
+            </template>
+          </li>
+        </ul>
       </div>
       <div class="content" v-if="show">
         <slot/>
@@ -23,31 +27,44 @@
 </template>
 
 <script>
+import { isArray, debounce } from "@/utils";
 export default {
   props: {
-    triggerEvent: {
-      type: String
+    controls: {
+      type: [Object, Array],
+      default: () => {
+        return {
+          show: "显示",
+          hidden: "隐藏"
+        };
+      }
     },
-    // show: {
-    //   type: Boolean,
-    //   default: false
-    // },
+    triggerEvent: {
+      type: String,
+      default: "click"
+    },
     position: {
       type: String,
-      required: true
+      validator: function(value) {
+        return ["top", "right", "bottom", "left"].indexOf(value) !== -1;
+      }
     },
-    drawerStyle: {
-      type: Object,
-      required: true
+    controlOffset: {
+      type: String,
+      default: "400"
     },
-    controlStyle: {
-      type: Object,
-      required: true
+    contentSize: {
+      type: String,
+      default: "300"
+    },
+    openDrawer: {
+      type: Function
     }
   },
   data() {
     return {
-      show: false
+      show: false,
+      positionClass: this.position
     };
   },
   watch: {
@@ -55,41 +72,75 @@ export default {
       if (value && !this.clickNotClose) {
         this.addCloseSidebarListener();
       }
+      if (value) {
+        document.body.classList.add("hidden_scoll_bar");
+      } else {
+        document.body.classList.remove("hidden_scoll_bar");
+      }
+    }
+  },
+  computed: {
+    controlItems() {
+      if (isArray(this.controls)) {
+        return this.controls;
+      } else {
+        return [this.controls];
+      }
     }
   },
   mounted() {
-    const rect = this.$refs["controls"].getBoundingClientRect();
-    if (this.position === "top") {
-      this.$refs["controls"].style["bottom"] = `-${rect.height}px`;
+    if (["top", "bottom"].includes(this.position)) {
+      this.$refs["controls"].style["left"] = `${this.controlOffset}`;
+      this.$refs["drawer"].style.maxHeight = this.contentSize;
     }
-    if (this.position === "bottom") {
-      this.$refs["controls"].style["top"] = `-${rect.height}px`;
+    if (["left", "right"].includes(this.position)) {
+      this.$refs["controls"].style["top"] = `${this.controlOffset}`;
+      this.$refs["drawer"].style.maxWidth = this.contentSize;
     }
-    if (this.position === "right") {
-      this.$refs["controls"].style["left"] = `-${rect.width}px`;
-    }
-    if (this.position === "left") {
-      this.$refs["controls"].style["right"] = `-${rect.width}px`;
-    }
+    this.updateControlLayout();
+  },
+  created() {
+    this.toggleDrawerShowByMouseover = debounce(
+      this.toggleDrawerShowByMouseover
+    );
   },
   destroyed() {
     this.removeCloseSidebarListener();
   },
   methods: {
-    toggleDrawerShow(e) {
-      if (e.type === "mouseover" && this.triggerEvent === "mouseover") {
+    toggleDrawerShow() {
+      if (this.triggerEvent === "click") {
         this.show = !this.show;
+        this.$nextTick(() => {
+          this.updateControlLayout();
+        });
+      }
+    },
+    toggleDrawerShowByMouseover(e) {
+      // if (typeof this.openDrawer === "function") {
+      //   this.show = this.openDrawer(e);
+      //   this.updateControlLayout();
+      // }
+      if (this.triggerEvent === "mouseover") {
+        this.show = !this.show;
+        this.$nextTick(() => {
+          this.updateControlLayout();
+        });
         return;
       }
-      if (e.type === "click" && this.triggerEvent === "click") {
-        this.show = !this.show;
-        return;
-      }
+    },
+    onDragShow() {
+      // const onOpenDrawer = this.openDrawer;
+      // if (!onOpenDrawer) {
+      // }
     },
     closeSidebar(evt) {
       const parent = evt.target.closest(".drawer");
       if (!parent) {
         this.show = false;
+        this.$nextTick(() => {
+          this.updateControlLayout();
+        });
         this.removeCloseSidebarListener();
       }
     },
@@ -108,10 +159,32 @@ export default {
       if (this.triggerEvent === "mouseover") {
         window.removeEventListener("mouseover", this.closeSidebar);
       }
+    },
+    updateControlLayout() {
+      const controlsEl = this.$refs["controls"];
+      const rect = controlsEl.getBoundingClientRect();
+      if (this.position === "top") {
+        controlsEl.style["bottom"] = `-${rect.height}px`;
+      }
+      if (this.position === "bottom") {
+        controlsEl.style["top"] = `-${rect.height}px`;
+      }
+      if (this.position === "right") {
+        controlsEl.style["left"] = `-${rect.width}px`;
+      }
+      if (this.position === "left") {
+        controlsEl.style["right"] = `-${rect.width}px`;
+      }
     }
   }
 };
 </script>
+
+<style>
+.hidden_scoll_bar {
+  overflow: hidden;
+}
+</style>
 
 <style scoped>
 .drawer__container--show {
@@ -142,20 +215,88 @@ export default {
 .drawer {
   position: fixed;
   box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.05);
-  transition: height 0.25s cubic-bezier(0.7, 0.3, 0.1, 1);
+  transition: all 0.4s cubic-bezier(0.7, 0.3, 0.1, 1);
   background: #fff;
   z-index: 20000;
 }
+.top .drawer {
+  height: 100%;
+  width: 100vw;
+  transform: translate(0, -100%);
+  top: 0;
+  left: 0;
+}
+.bottom .drawer {
+  height: 100%;
+  width: 100vw;
+  transform: translate(0, 100%);
+  bottom: 0;
+  left: 0;
+}
+.left .drawer {
+  height: 100vh;
+  width: 100%;
+  transform: translate(-100%, 0);
+  top: 0;
+  left: 0;
+}
+.right .drawer {
+  height: 100vh;
+  width: 100%;
+  transform: translate(100%, 0);
+  top: 0;
+  right: 0;
+}
 
-.controls {
+.controls__container {
   position: absolute;
-  padding: 10px;
   box-sizing: border-box;
   color: #606266;
-  background-color: #fff;
-  border: 1px solid #dcdfe6;
   cursor: pointer;
 }
+
+.controls {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+}
+
+.control {
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  background: #fff;
+  border: 1px solid #dcdfe6;
+  -webkit-appearance: none;
+  text-align: center;
+  box-sizing: border-box;
+  outline: none;
+  margin: 0;
+  transition: 0.1s;
+  font-weight: 500;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  padding: 12px 20px;
+  font-size: 14px;
+  border-radius: 4px;
+}
+
+.top .control,
+.bottom .control {
+  margin-left: 10px;
+}
+.left .control,
+.right .control {
+  margin-top: 10px;
+}
+
+.left .controls,
+.right .controls {
+  flex-direction: column;
+}
+
 .content {
   padding: 10px;
 }
