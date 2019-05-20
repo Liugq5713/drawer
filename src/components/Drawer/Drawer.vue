@@ -11,10 +11,10 @@
         <ul class="controls">
           <li v-for="(control,idx) in controlItems" class="control" :key="idx">
             <template v-if="show">
-              <slot name="control" v-bind:control="control">{{control.hidden}}</slot>
+              <slot name="control" v-bind:drawer="{drawerShow:show,control}">{{control.hidden}}</slot>
             </template>
             <template v-else>
-              <slot name="control" v-bind:control="control">{{control.show}}</slot>
+              <slot name="control" v-bind:drawer="{drawerShow:show,control}">{{control.show}}</slot>
             </template>
           </li>
         </ul>
@@ -109,6 +109,7 @@ export default {
   },
   methods: {
     toggleDrawerShow() {
+      this.openDrawer()
       if (this.triggerEvent === "click") {
         this.show = !this.show;
         this.$nextTick(() => {
@@ -116,7 +117,7 @@ export default {
         });
       }
     },
-    toggleDrawerShowByMouseover(e) {
+    toggleDrawerShowByMouseover() {
       // if (typeof this.openDrawer === "function") {
       //   this.show = this.openDrawer(e);
       //   this.updateControlLayout();

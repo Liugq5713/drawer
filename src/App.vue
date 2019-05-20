@@ -7,10 +7,10 @@
       contentSize="200px"
       :openDrawer="openDrawer"
     >
-      <template v-slot:control="control">
-        <div class="button margin-left--10">
-          <div>点击展开{{control}}</div>
-          <span>Here might be a page title</span>
+      <template v-slot:control="{drawer}">
+        <div class="button margin-left--10" @click="openDrawer(control)">
+          <div v-if="drawer.drawerShow">{{drawer.control.hidden}}</div>
+          <div v-else>{{drawer.control.show}}</div>
         </div>
       </template>
     </Drawer>
@@ -49,9 +49,13 @@ export default {
     };
   },
   methods: {
-    openDrawer(e) {
-      console.log("app", e);
-    }
+    openDrawer:(control)=> {
+      console.log('this',this)
+    console.log('control', control)
+    console.log('control', this.controls)
+
+}
+   
   }
 };
 </script>
