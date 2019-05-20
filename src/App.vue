@@ -1,14 +1,8 @@
 <template>
   <div id="app">
-    <Drawer
-      position="top"
-      :controls="controls"
-      controlOffset="300px"
-      contentSize="200px"
-      :openDrawer="openDrawer"
-    >
+    <Drawer position="top" :controls="controls" controlOffset="300px" contentSize="200px">
       <template v-slot:control="{drawer}">
-        <div class="button margin-left--10" @click="openDrawer(control)">
+        <div class="button margin-left--10">
           <div v-if="drawer.drawerShow">{{drawer.control.hidden}}</div>
           <div v-else>{{drawer.control.show}}</div>
         </div>
@@ -16,6 +10,7 @@
     </Drawer>
     <Drawer
       position="right"
+      :openDrawer="openDrawer"
       :controls="controls"
       controlOffset="30vh"
       contentSize="600px"
@@ -49,13 +44,10 @@ export default {
     };
   },
   methods: {
-    openDrawer:(control)=> {
-      console.log('this',this)
-    console.log('control', control)
-    console.log('control', this.controls)
-
-}
-   
+    openDrawer(target, currentTarget) {
+      console.log("p", target, currentTarget);
+      return true;
+    }
   }
 };
 </script>

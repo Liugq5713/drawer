@@ -2,13 +2,8 @@
   <div class="drawer__container" :class="[positionClass,{'drawer__container--show':show}]">
     <div class="drawer__container-bg"/>
     <div ref="drawer" class="drawer">
-      <div
-        class="controls__container"
-        ref="controls"
-        @click="toggleDrawerShow"
-        @mouseover="toggleDrawerShowByMouseover"
-      >
-        <ul class="controls">
+      <div class="controls__container" ref="controls">
+        <ul class="controls" @click="toggleDrawerShow" @mouseover="toggleDrawerShowByMouseover">
           <li v-for="(control,idx) in controlItems" class="control" :key="idx">
             <template v-if="show">
               <slot name="control" v-bind:drawer="{drawerShow:show,control}">{{control.hidden}}</slot>
@@ -30,6 +25,10 @@
 import { isArray, debounce } from "@/utils";
 export default {
   props: {
+    triggerEvent: {
+      type: String,
+      default: "click"
+    },
     controls: {
       type: [Object, Array],
       default: () => {
@@ -38,10 +37,6 @@ export default {
           hidden: "隐藏"
         };
       }
-    },
-    triggerEvent: {
-      type: String,
-      default: "click"
     },
     position: {
       type: String,
@@ -108,32 +103,37 @@ export default {
     this.removeCloseSidebarListener();
   },
   methods: {
-    toggleDrawerShow() {
-      this.openDrawer()
-      if (this.triggerEvent === "click") {
-        this.show = !this.show;
-        this.$nextTick(() => {
-          this.updateControlLayout();
-        });
+    toggleDrawerShow(evt) {
+      if (this.triggerEvent !== "click") {
+        return;
       }
-    },
-    toggleDrawerShowByMouseover() {
-      // if (typeof this.openDrawer === "function") {
-      //   this.show = this.openDrawer(e);
-      //   this.updateControlLayout();
-      // }
-      if (this.triggerEvent === "mouseover") {
+      const onOpenDraw = this.openDrawer;
+      if (!onOpenDraw) {
         this.show = !this.show;
         this.$nextTick(() => {
           this.updateControlLayout();
         });
         return;
       }
+      const target = evt.target;
+      const currentTarget = event.currentTarget;
+      return (this.show = onOpenDraw(target, currentTarget));
     },
-    onDragShow() {
-      // const onOpenDrawer = this.openDrawer;
-      // if (!onOpenDrawer) {
-      // }
+    toggleDrawerShowByMouseover() {
+      if (this.triggerEvent !== "mouseover") {
+        return;
+      }
+      const onOpenDraw = this.openDrawer;
+      if (!onOpenDraw) {
+        this.show = !this.show;
+        this.$nextTick(() => {
+          this.updateControlLayout();
+        });
+        return;
+      }
+      const target = evt.target;
+      const currentTarget = event.currentTarget;
+      return (this.show = onOpenDraw(target, currentTarget));
     },
     closeSidebar(evt) {
       const parent = evt.target.closest(".drawer");
