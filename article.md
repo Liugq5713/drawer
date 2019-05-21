@@ -71,6 +71,34 @@ controls   |                       |
 
 ## 样式调整
 
+因为抽屉支持在上下左右四个方向上放置，不同方向上定义的偏移方向都不同。因此需要定义不同的 css 类。
+
+`:class="[positionClass]`
+
+```html
+<div class="drawer__container" :class="[positionClass]"></div>
+```
+
+```js
+  data() {
+    return {
+      show: false,
+      positionClass: this.position
+    };
+  },
+```
+
+```css
+// 定义右侧的drawer，其余方向上的同理
+.right .drawer {
+  height: 100vh;
+  width: 100%;
+  transform: translate(100%, 0);
+  top: 0;
+  right: 0;
+}
+```
+
 ### 控件
 
 使得控件完全贴合内容区，不会因为控件的内容而使得控件显示不完全，或者脱离内容区。
@@ -109,11 +137,25 @@ transition: opacity 0.3s cubic-bezier(0.7, 0.3, 0.1, 1);
 
 ## props
 
-我们需要`defaultShow`控制抽屉的展开。
-
 ## 钩子
 
-`openDrawer`控制是否抽屉被打开。这里的实现方式，类似事件委托。
+函数`openDrawer`通过 prop 传入，`openDrawer`控制是否抽屉被打开。
+
+因为点击事件，mouseover 事件我们直接挂载到了`class=controls`的 ul 元素上，并没有绑定在`li`元素上。即事件委托。部分代码如下：
+
+```js
+const onOpenDraw = this.openDrawer
+if (!onOpenDraw) {
+  return
+}
+// 获取到目标阶段指向的函数
+const target = evt.target
+//获取到代理事件的元素
+const currentTarget = event.currentTarget
+// 我们给openDraw传入target，currentTarget两个参数，具体由父组件定义如何实现
+// openDraw函数返回值为true，打开抽屉，值为false,不打开抽屉
+return (this.show = onOpenDraw(target, currentTarget))
+```
 
 ## 事件
 
