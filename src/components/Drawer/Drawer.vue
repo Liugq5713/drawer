@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { isArray, debounce } from "@/utils";
+import { isArray, debounce } from "../../utils";
 export default {
   props: {
     triggerEvent: {
@@ -47,15 +47,16 @@ export default {
       type: String,
       validator: function(value) {
         return ["top", "right", "bottom", "left"].indexOf(value) !== -1;
-      }
+      },
+      default:'right'
     },
     controlOffset: {
       type: String,
-      default: "400"
+      default: "400px"
     },
     contentSize: {
       type: String,
-      default: "300"
+      default: "300px"
     },
     openDrawer: {
       type: Function

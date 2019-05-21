@@ -5,7 +5,7 @@ actionText: 快速上手 →
 actionLink: /doc
 features:
   - title: 简单
-    details: 仅有一个组件
+    details: 目前仅有一个组件
   - title: 功能丰富
     details: 实践了自己的文章，添加丰富的自定义组件接口
   - title: 可供学习
