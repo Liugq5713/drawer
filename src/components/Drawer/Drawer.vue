@@ -48,7 +48,7 @@ export default {
       validator: function(value) {
         return ["top", "right", "bottom", "left"].indexOf(value) !== -1;
       },
-      default:'right'
+      default: "right"
     },
     controlOffset: {
       type: String,
@@ -109,37 +109,36 @@ export default {
     this.removeCloseSidebarListener();
   },
   methods: {
+    openDrawerByControl(evt) {
+      const onOpenDraw = this.openDrawer;
+      if (!onOpenDraw) {
+        this.show = true;
+        this.$nextTick(() => {
+          this.updateControlLayout();
+        });
+        return;
+      }
+      const target = evt.target;
+      const currentTarget = evt.currentTarget;
+      return (this.show = onOpenDraw(target, currentTarget));
+    },
+    closeDrawerByControl() {
+      this.show = false;
+    },
     toggleDrawerShow(evt) {
       if (this.triggerEvent !== "click") {
         return;
       }
-      const onOpenDraw = this.openDrawer;
-      if (!onOpenDraw) {
-        this.show = !this.show;
-        this.$nextTick(() => {
-          this.updateControlLayout();
-        });
-        return;
-      }
-      const target = evt.target;
-      const currentTarget = event.currentTarget;
-      return (this.show = onOpenDraw(target, currentTarget));
+      this.show ? this.closeDrawerByControl() : this.openDrawerByControl(evt);
     },
     toggleDrawerShowByMouseover(evt) {
+      
+      console.log('this.show',this.show )
+      console.log('toggleDrawerShowByMouseover evt', evt)
       if (this.triggerEvent !== "mouseover") {
         return;
       }
-      const onOpenDraw = this.openDrawer;
-      if (!onOpenDraw) {
-        this.show = !this.show;
-        this.$nextTick(() => {
-          this.updateControlLayout();
-        });
-        return;
-      }
-      const target = evt.target;
-      const currentTarget = event.currentTarget;
-      return (this.show = onOpenDraw(target, currentTarget));
+      this.show ? this.closeDrawerByControl() : this.openDrawerByControl(evt);
     },
     closeSidebar(evt) {
       const parent = evt.target.closest(".drawer");

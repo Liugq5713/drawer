@@ -180,6 +180,28 @@ const currentTarget = event.currentTarget
 return (this.show = onOpenDraw(target, currentTarget))
 ```
 
+父组件传入的函数如下，关于事件委托的知识感觉可以应用在这里，笔者做一个示例，让`class='control-0'`的元素不能点击。
+
+我们使用 [Element.matches](https://developer.mozilla.org/en-US/docs/Web/API/Element/matches) 匹配`.control-0`类，其可以像 CSS 选择器做更加灵活的匹配。但因为 li 元素里面可能还有其他元素，所以需要
+
+```js
+openDrawer(target, currentTarget) {
+  let shouldOpen = true;
+   // 仅遍历到最外层
+  while (target !== currentTarget) {
+    // 判断是否匹配到我们所需要的元素上
+    if (target.matches(".control-0")) {
+      shouldOpen = false;
+      break;
+    } else {
+      // 向上寻找
+      target = target.parentNode;
+    }
+  }
+  return shouldOpen;
+}
+```
+
 ## 事件
 
 作为一个优秀的组件，我们支持当抽屉打开后，点击抽屉外部分收起。
@@ -221,7 +243,7 @@ window.addEventListener('click', this.closeSidebar)
 ## 参考文章
 
 - [事件委托](https://zhuanlan.zhihu.com/p/26536815)
-- [class与数组语法](https://cn.vuejs.org/v2/guide/class-and-style.html#%E6%95%B0%E7%BB%84%E8%AF%AD%E6%B3%95)
+- [class 与数组语法](https://cn.vuejs.org/v2/guide/class-and-style.html#%E6%95%B0%E7%BB%84%E8%AF%AD%E6%B3%95)
 - [作用域插槽](https://cn.vuejs.org/v2/guide/components-slots.html#%E4%BD%9C%E7%94%A8%E5%9F%9F%E6%8F%92%E6%A7%BD)
-- [JavaScript专题之跟着underscore学防抖](https://github.com/mqyqingfeng/Blog/issues/22)
-- [JavaScript专题之跟着 underscore 学节流](https://github.com/mqyqingfeng/Blog/issues/26)
+- [JavaScript 专题之跟着 underscore 学防抖](https://github.com/mqyqingfeng/Blog/issues/22)
+- [JavaScript 专题之跟着 underscore 学节流](https://github.com/mqyqingfeng/Blog/issues/26)

@@ -1,6 +1,13 @@
 <template>
   <div id="app">
-    <Drawer position="top" :controls="controls" controlOffset="300px" contentSize="200px">
+    <Drawer
+      position="top"
+      :openDrawer="openDrawer"
+      :controls="controls"
+      controlOffset="300px"
+      contentSize="200px"
+      triggerEvent="mouseover"
+    >
       <template v-slot:control="{drawer}">
         <div class="button margin-left--10">
           <div v-if="drawer.drawerShow">{{drawer.control.hidden}}</div>
@@ -10,7 +17,6 @@
     </Drawer>
     <Drawer
       position="right"
-      :openDrawer="openDrawer"
       :controls="controls"
       controlOffset="30vh"
       contentSize="600px"
@@ -33,7 +39,7 @@ export default {
     return {
       controls: [
         {
-          show: "显示",
+          show: "点击我不打开",
           hidden: "隐藏"
         },
         {
@@ -44,9 +50,17 @@ export default {
     };
   },
   methods: {
-    openDrawer(target, currentTarget) {
-      console.log("p", target, currentTarget);
-      return true;
+    openDrawer(target) {
+      let shouldOpen = true;
+      while (!target.matches('.controls')) {
+        if (target.matches(".control-0")) {
+          shouldOpen = false;
+          break;
+        } else {
+          target = target.parentNode;
+        }
+      }
+      return shouldOpen;
     }
   }
 };

@@ -8,16 +8,13 @@ export const isArray = arr => {
 
 export const debounce = (fn, interval = 400) => {
   let timeout = null
-  let is_first = true
   return function() {
-    if (is_first) {
-      fn.apply(this, arguments)
-      is_first = false
-      return
-    }
+    const context = this;
     clearTimeout(timeout)
     timeout = setTimeout(() => {
-      fn.apply(this, arguments)
+      fn.apply(context, arguments)
     }, interval)
   }
 }
+
+
