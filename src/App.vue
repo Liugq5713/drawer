@@ -21,7 +21,7 @@
       controlOffset="30vh"
       contentSize="600px"
     >Lorem ipsum dolor sit amet consectetur, adipisicing elit. Autem iste non cupiditate harum, minima rerum omnis consequatur sequi sed inventore quae consequuntur fuga asperiores dolore esse, amet facere, similique laborum?</Drawer>
-    <Drawer position="bottom" controlOffset="300px" contentSize="200px"/>
+    <Drawer position="bottom" triggerEvent="mouseover" controlOffset="300px" contentSize="200px"/>
     <Drawer position="left" controlOffset="300px" contentSize="200px"/>
     <div style="height:1000px;width:100px"></div>
   </div>
@@ -52,7 +52,7 @@ export default {
   methods: {
     openDrawer(target) {
       let shouldOpen = true;
-      while (!target.matches('.controls')) {
+      while (!target.matches(".controls")) {
         if (target.matches(".control-0")) {
           shouldOpen = false;
           break;
@@ -60,6 +60,7 @@ export default {
           target = target.parentNode;
         }
       }
+      console.log("shouldOpen", shouldOpen);
       return shouldOpen;
     }
   }

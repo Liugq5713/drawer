@@ -6,15 +6,17 @@ export const isArray = arr => {
   return Array.isArray(arr)
 }
 
-export const debounce = (fn, interval = 400) => {
-  let timeout = null
-  return function() {
-    const context = this;
-    clearTimeout(timeout)
-    timeout = setTimeout(() => {
-      fn.apply(context, arguments)
-    }, interval)
+export function throttle(func, wait = 1000) {
+  let timeout
+  return function(evt) {
+    const context = this
+    let args = evt
+    console.log('throttle', this, evt)
+    if (!timeout) {
+      timeout = setTimeout(function() {
+        timeout = null
+        func.apply(context, args)
+      }, wait)
+    }
   }
 }
-
-

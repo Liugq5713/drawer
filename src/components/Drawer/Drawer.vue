@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { isArray, debounce } from "../../utils";
+import { isArray, throttle } from "../../utils";
 export default {
   props: {
     triggerEvent: {
@@ -101,7 +101,7 @@ export default {
     this.updateControlLayout();
   },
   created() {
-    this.toggleDrawerShowByMouseover = debounce(
+    this.toggleDrawerShowByMouseover = throttle(
       this.toggleDrawerShowByMouseover
     );
   },
@@ -109,36 +109,37 @@ export default {
     this.removeCloseSidebarListener();
   },
   methods: {
-    openDrawerByControl(evt) {
-      const onOpenDraw = this.openDrawer;
-      if (!onOpenDraw) {
-        this.show = true;
-        this.$nextTick(() => {
-          this.updateControlLayout();
-        });
-        return;
-      }
-      const target = evt.target;
-      const currentTarget = evt.currentTarget;
-      return (this.show = onOpenDraw(target, currentTarget));
-    },
-    closeDrawerByControl() {
-      this.show = false;
-    },
     toggleDrawerShow(evt) {
       if (this.triggerEvent !== "click") {
         return;
       }
-      this.show ? this.closeDrawerByControl() : this.openDrawerByControl(evt);
+      this.show = this.show
+        ? this.closeDrawerByControl()
+        : this.openDrawerByControl(evt);
     },
     toggleDrawerShowByMouseover(evt) {
-      
-      console.log('this.show',this.show )
-      console.log('toggleDrawerShowByMouseover evt', evt)
       if (this.triggerEvent !== "mouseover") {
         return;
       }
-      this.show ? this.closeDrawerByControl() : this.openDrawerByControl(evt);
+      console.log("evt", evt);
+      this.show = this.show
+        ? this.closeDrawerByControl()
+        : this.openDrawerByControl(evt);
+      this.$nextTick(() => {
+        this.updateControlLayout();
+      });
+    },
+    openDrawerByControl(evt) {
+      const onOpenDraw = this.openDrawer;
+      if (!onOpenDraw) {
+        return true;
+      }
+      const target = evt.target;
+      const currentTarget = evt.currentTarget;
+      return onOpenDraw(target, currentTarget);
+    },
+    closeDrawerByControl() {
+      return false;
     },
     closeSidebar(evt) {
       const parent = evt.target.closest(".drawer");
