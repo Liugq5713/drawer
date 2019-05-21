@@ -1,54 +1,14 @@
-
-## 设计
-
-
-### drawer属性
-
-
-
-
-| 参数          | 说明               | 类型          | 可选值              | 默认值  |
-| ------------- | ------------------ | ------------- | ------------------- | ------- |
-| triggerEvent  | 触发打开抽屉的事件 | String        | 'mouseover'/'click' | 'click' |
-| controls      | 控件显示的值       | Array/Object  |                     |         |
-| position      | 控件显示位置       | String        |                     | 'right' |
-| position      | 控件显示位置       | String        |                     | 'right' |
-| contentSize   | 抽屉内容大小       | String        |                     | '300'   |
-| controlOffset | 控件的偏移         | String/Number |                     |         |
-| openDrawer    | 是否打开抽屉       | Function      |                     |         |
-
-
-
-
-#### 详细说明
-
-- controls
-
-默认值为 
-
-```js
-controls={
-    showText:'显示',
-    hidden:'隐藏'
-}
-```
-
-如果需要添加多个空间，可以传入数组
-
-```js
-const controls = [
-{
-    show:'显示',
-    hidden:'隐藏'
-},
-{
-    show:'露出,
-    hidden:'消散''
-}
-]
-```
-
-### slot
-content，即抽屉里面的内容防止在默认插槽
-如果想自定义控件，请放置在名为 `controls` 的具名插槽中
-
+---
+home: true
+heroImage: /hero.png
+actionText: 快速上手 →
+actionLink: /doc
+features:
+  - title: 简单
+    details: 以 Markdown 为中心的项目结构，以最少的配置帮助你专注于写作。
+  - title: 功能丰富
+    details: 享受 Vue + webpack 的开发体验，在 Markdown 中使用 Vue 组件，同时可以使用 Vue 来开发自定义主题。
+  - title: 可供学习
+    details: VuePress 为每个页面预渲染生成静态的 HTML，同时在页面被加载的时候，将作为 SPA 运行。
+footer: MIT Licensed | Copyright © 2018-present Evan You
+---
