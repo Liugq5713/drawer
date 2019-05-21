@@ -2,9 +2,14 @@
   <div class="drawer__container" :class="[positionClass,{'drawer__container--show':show}]">
     <div class="drawer__container-bg"/>
     <div ref="drawer" class="drawer">
-      <div class="controls__container" ref="controls">
+      <div class="controls__container" ref="controls__container">
         <ul class="controls" @click="toggleDrawerShow" @mouseover="toggleDrawerShowByMouseover">
-          <li v-for="(control,idx) in controlItems" class="control" :key="idx">
+          <li
+            v-for="(control,idx) in controlItems"
+            class="control"
+            :class="'control-'+idx"
+            :key="idx"
+          >
             <template v-if="show">
               <slot name="control" v-bind:drawer="{drawerShow:show,control}">{{control.hidden}}</slot>
             </template>
@@ -85,11 +90,11 @@ export default {
   },
   mounted() {
     if (["top", "bottom"].includes(this.position)) {
-      this.$refs["controls"].style["left"] = `${this.controlOffset}`;
+      this.$refs["controls__container"].style["left"] = `${this.controlOffset}`;
       this.$refs["drawer"].style.maxHeight = this.contentSize;
     }
     if (["left", "right"].includes(this.position)) {
-      this.$refs["controls"].style["top"] = `${this.controlOffset}`;
+      this.$refs["controls__container"].style["top"] = `${this.controlOffset}`;
       this.$refs["drawer"].style.maxWidth = this.contentSize;
     }
     this.updateControlLayout();
@@ -119,7 +124,7 @@ export default {
       const currentTarget = event.currentTarget;
       return (this.show = onOpenDraw(target, currentTarget));
     },
-    toggleDrawerShowByMouseover() {
+    toggleDrawerShowByMouseover(evt) {
       if (this.triggerEvent !== "mouseover") {
         return;
       }
@@ -162,19 +167,19 @@ export default {
       }
     },
     updateControlLayout() {
-      const controlsEl = this.$refs["controls"];
-      const rect = controlsEl.getBoundingClientRect();
+      const controlsContainerEl = this.$refs["controls__container"];
+      const rect = controlsContainerEl.getBoundingClientRect();
       if (this.position === "top") {
-        controlsEl.style["bottom"] = `-${rect.height}px`;
+        controlsContainerEl.style["bottom"] = `-${rect.height}px`;
       }
       if (this.position === "bottom") {
-        controlsEl.style["top"] = `-${rect.height}px`;
+        controlsContainerEl.style["top"] = `-${rect.height}px`;
       }
       if (this.position === "right") {
-        controlsEl.style["left"] = `-${rect.width}px`;
+        controlsContainerEl.style["left"] = `-${rect.width}px`;
       }
       if (this.position === "left") {
-        controlsEl.style["right"] = `-${rect.width}px`;
+        controlsContainerEl.style["right"] = `-${rect.width}px`;
       }
     }
   }

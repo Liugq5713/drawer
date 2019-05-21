@@ -20,12 +20,14 @@ controls   |                       |
            +-----------------------+
 ```
 
-不以规矩，不成方圆。HTML 有语义化标签，CSS 有 BEM 规范，这些规范都帮助我们写出结构清晰的 HTML 架构。组件 HTML 结构如下：
+不以规矩，不成方圆。HTML 有语义化标签，CSS 有 BEM 规范，这些规范都帮助我们写出结构清晰的 HTML 架构（ps:布局部分使用语义化标签还挺适合的，这种局部小组件还是 div 一把梭了）。组件 HTML 结构如下：
 
 ```html
 <div class="drawer-container">
   <div class="drawer">
-    <div class="controls"></div>
+    <div class="controls__container" ref="controls__container">
+      <ul class="controls"></ul>
+    </div>
     <div class="content"></div>
   </div>
 </div>
@@ -60,7 +62,7 @@ controls   |                       |
 
 ### 控件
 
-通过负值将控件移出来
+通过负值将控件从抽屉内容区移出来
 
 ```css
 .controls {
@@ -71,12 +73,13 @@ controls   |                       |
 
 ## 样式调整
 
-因为抽屉支持在上下左右四个方向上放置，不同方向上定义的偏移方向都不同。因此需要定义不同的 css 类。
-
-`:class="[positionClass]`
+因为抽屉支持在上下左右四个方向上放置，不同方向上定义的偏移方向都不同。因此需要定义不同的 css 类。通过传入的 position 值，利用 css 的级联特性应用样式
 
 ```html
-<div class="drawer__container" :class="[positionClass]"></div>
+<div
+  class="drawer__container"
+  :class="[positionClass,{'drawer__container--show':show}]"
+></div>
 ```
 
 ```js
@@ -90,6 +93,7 @@ controls   |                       |
 
 ```css
 // 定义右侧的drawer，其余方向上的同理
+// 通过css的级联，对不同方向上的drawer添加不同的样式
 .right .drawer {
   height: 100vh;
   width: 100%;
@@ -101,16 +105,18 @@ controls   |                       |
 
 ### 控件
 
-使得控件完全贴合内容区，不会因为控件的内容而使得控件显示不完全，或者脱离内容区。
+使得控件完全贴合内容区，不会因为控件的内容变化，比如控件内容为 show 和 hidden，由于切换的时候，两个单词长度不一样，而使得控件显示不完全，或者脱离内容区。
 
-这种情况当然是使用万能的 JavaScript 了啊。还是拿右侧抽屉举例子:
+这种情况我们可以使用 JavaScript 动态计算。因为经常用到，还是封装成一个函数吧。还是拿右侧抽屉举例子:
 
 ```js
-// 获取控件的宽高
-const rect = this.$refs['controls'].getBoundingClientRect()
-if (this.position === 'right') {
-  // 重新设置偏移量
-  this.$refs['controls'].style['left'] = `-${rect.width}px`
+updateControlLayout() {
+  // 获取控件的宽高
+  const rect = this.$refs['controls'].getBoundingClientRect()
+  if (this.position === 'right') {
+    // 重新设置偏移量
+    this.$refs['controls'].style['left'] = `-${rect.width}px`
+  }
 }
 ```
 
@@ -137,11 +143,28 @@ transition: opacity 0.3s cubic-bezier(0.7, 0.3, 0.1, 1);
 
 ## props
 
-## 钩子
+## openDrawer 钩子
 
 函数`openDrawer`通过 prop 传入，`openDrawer`控制是否抽屉被打开。
 
-因为点击事件，mouseover 事件我们直接挂载到了`class=controls`的 ul 元素上，并没有绑定在`li`元素上。即事件委托。部分代码如下：
+利用事件委托，将 click 事件，mouseover 事件直接挂载到了`class=controls`的 ul 元素上，为了方便识别目标`li`元素，给每一个 li 元素添加 `:class="'control-'+idx"`
+
+```html
+<ul
+  class="controls"
+  @click="toggleDrawerShow"
+  @mouseover="toggleDrawerShowByMouseover"
+>
+  <li
+    v-for="(control,idx) in controlItems"
+    class="control"
+    :class="'control-'+idx"
+    :key="idx"
+  >
+    <!-- xxx -->
+  </li>
+</ul>
+```
 
 ```js
 const onOpenDraw = this.openDrawer
@@ -152,7 +175,7 @@ if (!onOpenDraw) {
 const target = evt.target
 //获取到代理事件的元素
 const currentTarget = event.currentTarget
-// 我们给openDraw传入target，currentTarget两个参数，具体由父组件定义如何实现
+// 我们给openDraw传入target，currentTarget两个参数，具体由父组件决定如何实现
 // openDraw函数返回值为true，打开抽屉，值为false,不打开抽屉
 return (this.show = onOpenDraw(target, currentTarget))
 ```
