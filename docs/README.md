@@ -5,10 +5,10 @@ actionText: 快速上手 →
 actionLink: /doc
 features:
   - title: 简单
-    details: 以 Markdown 为中心的项目结构，以最少的配置帮助你专注于写作。
+    details: 仅有一个组件
   - title: 功能丰富
-    details: 享受 Vue + webpack 的开发体验，在 Markdown 中使用 Vue 组件，同时可以使用 Vue 来开发自定义主题。
+    details: 实践了自己的文章，添加丰富的自定义组件接口
   - title: 可供学习
-    details: VuePress 为每个页面预渲染生成静态的 HTML，同时在页面被加载的时候，将作为 SPA 运行。
-footer: MIT Licensed | Copyright © 2018-present Evan You
+    details: 笔者会根据反馈，把这个组件做到最好
+footer: MIT Licensed | Copyright © 2019 sarva
 ---
