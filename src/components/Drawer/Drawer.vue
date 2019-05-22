@@ -45,18 +45,18 @@ export default {
     },
     position: {
       type: String,
+      default: "right",
       validator: function(value) {
         return ["top", "right", "bottom", "left"].indexOf(value) !== -1;
-      },
-      default: "right"
+      }
     },
     controlOffset: {
-      type: String,
-      default: "400px"
+      type: [String, Number],
+      default: 400
     },
     contentSize: {
-      type: String,
-      default: "300px"
+      type: [String, Number],
+      default: 300
     },
     openDrawer: {
       type: Function
@@ -106,12 +106,18 @@ export default {
     }
   },
   mounted() {
+    if (typeof this.controlOffset === "number") {
+      this.controlOffset = `${this.controlOffset}px`;
+    }
+    if (typeof this.contentSize === "number") {
+      this.contentSize = `${this.contentSize}px`;
+    }
     if (["top", "bottom"].includes(this.position)) {
-      this.$refs["controls__container"].style["left"] = `${this.controlOffset}`;
+      this.$refs["controls__container"].style["left"] = this.controlOffset;
       this.$refs["drawer"].style.maxHeight = this.contentSize;
     }
     if (["left", "right"].includes(this.position)) {
-      this.$refs["controls__container"].style["top"] = `${this.controlOffset}`;
+      this.$refs["controls__container"].style["top"] = this.controlOffset;
       this.$refs["drawer"].style.maxWidth = this.contentSize;
     }
     this.updateControlLayout();
@@ -143,7 +149,6 @@ export default {
       }
       const target = evt.target;
       const currentTarget = evt.currentTarget;
-      console.log("currentTarget", currentTarget);
       this.lockedShow = onOpenDraw(target, currentTarget);
     },
     closeDrawerByControl() {
