@@ -71,6 +71,10 @@ controls   |                       |
 }
 ```
 
+## 配置项 props
+
+我们想象一下用户会如何配置我们的组件，比如内容的宽度，控件的位置，抽屉的位置等等，然后我们基于这些配置去写我们的代码
+
 ## 样式调整
 
 因为抽屉支持在上下左右四个方向上放置，不同方向上定义的偏移方向都不同。因此需要定义不同的 css 类。通过传入的 position 值，利用 css 的级联特性应用样式
@@ -120,7 +124,7 @@ updateControlLayout() {
 }
 ```
 
-### 动画
+### 抽屉开合动画
 
 [贝塞尔曲线](https://developer.mozilla.org/en-US/docs/Web/CSS/timing-function)了解一下
 
@@ -186,20 +190,19 @@ window.addEventListener('click', this.closeSidebar)
 
 面对这种情况，我一开始就想到了防抖和节流。但其实都是不适合的。
 
-> 节流的原理：如果你持续触发事件，每隔一段时间，只执行一次事件。
-
-其执行事件是异步的，那么当我打开抽屉，然后将鼠标移到抽屉外（移到抽屉外会关闭抽屉），会导致抽屉关闭之后又开起
-
 > 防抖的原理：你尽管触发事件，但是我一定在事件触发 n 秒后才执行，如果你在一个事件触发的 n 秒内又触发了这个事件，那我就以新的事件的时间为准，n 秒后才执行，总之，就是要等你触发完事件 n 秒内不再触发事件，我才执行。
 
-使用防抖也会存在节流的问题，并且防抖由于是在一个事件触发 n 秒之后才执行，导致组件有一种反应慢的感觉。
+防抖由于是在一个事件触发 n 秒之后才执行，导致组件有一种反应慢的感觉。
 
-这两种方案都不适合，我想了好久想了一种方案（不知道叫什么，暂且叫它赋值锁吧）
+> 节流的原理：如果你持续触发事件，每隔一段时间，只执行一次事件。
 
-因为抽屉的打开和关闭都是由`show`变量控制。我们换一种思路， 那么当`show`值变化时，我们锁住`show`值，n 秒内不允许修改，即控制住了抽屉的开合。n 秒后才可以修改。我们使用计算属性实现如下：
+其执行事件是异步的，那么当我打开抽屉，然后将鼠标移到抽屉外（移到抽屉外会关闭抽屉），因为抽屉的打开和关闭都是由`show`变量控制。如果使用节流，会导致异步执行打开抽屉的函数，导致抽屉关闭之后又开起。
+
+节流一般是指事件在一段时间内执行。我们这里不妨换一种思路，对`show`值进行节流，你也可以把它理解成一种锁。那么当`show`值变化后，我们锁住`show`值，n 秒内不允许修改，n 秒后才可以修改。即控制住了抽屉不会在短时间内迅速开合。我们使用计算属性实现如下：
 
 ```js
 // this.lock 初始值为undefine
+// 开闭抽屉的函数通过对lockedShow进行赋值，不会直接操作show
 lockedShow: {
     get() {
       return this.show;
@@ -208,8 +211,8 @@ lockedShow: {
       if (this.lock) {
         return;
       } else {
-        // 200毫秒之后解除赋值锁
         this.lock = setTimeout(() => {
+        // 200毫秒之后解除赋值锁
           this.lock = undefined;
         }, 200);
         this.show = val;
@@ -222,7 +225,7 @@ lockedShow: {
 
 函数`openDrawer`通过 prop 传入，`openDrawer`控制是否抽屉被打开。
 
-利用事件委托，将 click 事件，mouseover 事件直接挂载到了`class=controls`的 ul 元素上，为了方便识别目标`li`元素，给每一个 li 元素添加 `:class="'control-'+idx"`
+点击控件，开合抽屉的实现，利用了事件委托，将 click 事件，mouseover 事件直接挂载到了`class=controls`的 ul 元素上，为了方便识别目标`li`元素，给每一个 li 元素添加 `:class="'control-'+idx"`
 
 ```html
 <ul
@@ -242,6 +245,7 @@ lockedShow: {
 ```
 
 ```js
+// 开合抽屉的函数
 openDrawerByControl(evt) {
   const onOpenDraw = this.openDrawer;
   if (!onOpenDraw) {
@@ -259,7 +263,7 @@ openDrawerByControl(evt) {
 
 父组件传入的函数如下，关于事件委托的知识感觉可以应用在这里，笔者做一个示例，让`class='control-0'`的元素不能点击。
 
-我们使用 [Element.matches](https://developer.mozilla.org/en-US/docs/Web/API/Element/matches) 匹配`.control-0`类，其可以像 CSS 选择器做更加灵活的匹配。但因为 li 元素里面可能还有其他元素，所以需要向上寻找其父元素，直到匹配到我们事件委托的元素位置
+我们使用 [Element.matches](https://developer.mozilla.org/en-US/docs/Web/API/Element/matches) 匹配`.control-0`类，其可以像 CSS 选择器做更加灵活的匹配。但因为 li 元素里面可能还有其他元素，所以需要不断向上寻找其父元素，直到匹配到我们事件委托的元素为止
 
 ```js
 openDrawer(target) {
@@ -284,6 +288,7 @@ openDrawer(target) {
 - 用到了很多 Element 的方法（eg：closest，matches），平时很少接触
 - CSS 真难写，作为一个写后台的，不经常写 CSS 的表示好难，这里费了最多的功夫
 - 实践了自己之前[写好一个组件的文章](https://juejin.im/post/5cdacf96e51d453ae110543b)，知易行难，还需努力
+- 一开始自己可能很难想全组件需要什么配置，可以文档先行，先想好做什么怎么做
 
 ## 参考文章
 
