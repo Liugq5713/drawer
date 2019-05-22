@@ -69,8 +69,8 @@ export default {
   data() {
     return {
       show: false,
-      positionClass: this.position,
-      lock: undefined
+      lock: undefined,
+      positionClass: this.position
     };
   },
   watch: {
