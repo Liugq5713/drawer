@@ -6,11 +6,12 @@
     controlOffset="300px"
     contentSize="400px"
     triggerEvent="mouseover"
+    class="demo"
   >
     <template v-slot:control="{drawer}">
       <div class="button margin-left--10">
-        <div v-if="drawer.drawerShow">{{drawer.control.hidden}}</div>
-        <div v-else>{{drawer.control.show}}</div>
+        <div v-if="drawer.drawerShow" class="vertical">{{drawer.control.hidden}}</div>
+        <div v-else class="vertical">{{drawer.control.show}}</div>
       </div>
     </template>
     <div style="text-align:center">
@@ -35,7 +36,7 @@ export default {
           hidden: "不开"
         },
         {
-          show: "点我",
+          show: "来这",
           hidden: "关闭"
         }
       ]
@@ -57,3 +58,16 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.vertical {
+  writing-mode: vertical-rl;
+  height: 40px;
+  line-height: 20px;
+  font-size: 16px;
+  letter-spacing: 5px;
+}
+.demo >>> .control {
+  padding: 20px 12px;
+}
+</style>
