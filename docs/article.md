@@ -1,4 +1,4 @@
-# [实战]如何写好一个 vue 组件，老夫一年的经验都在这里了
+# 思路说明
 
 ## 设计
 
@@ -141,8 +141,6 @@ transition: opacity 0.3s cubic-bezier(0.7, 0.3, 0.1, 1);
 
 ```
 
-## props
-
 ## openDrawer 钩子
 
 函数`openDrawer`通过 prop 传入，`openDrawer`控制是否抽屉被打开。
@@ -167,17 +165,19 @@ transition: opacity 0.3s cubic-bezier(0.7, 0.3, 0.1, 1);
 ```
 
 ```js
-const onOpenDraw = this.openDrawer
-if (!onOpenDraw) {
-  return
-}
+openDrawerByControl(evt) {
+  const onOpenDraw = this.openDrawer;
+  if (!onOpenDraw) {
+    this.lockedShow = true;
+    return;
+  }
 // 获取到目标阶段指向的函数
-const target = evt.target
+  const target = evt.target;
 //获取到代理事件的元素
-const currentTarget = event.currentTarget
-// 我们给openDraw传入target，currentTarget两个参数，具体由父组件决定如何实现
-// openDraw函数返回值为true，打开抽屉，值为false,不打开抽屉
-return (this.show = onOpenDraw(target, currentTarget))
+  const currentTarget = evt.currentTarget;
+  // 我们给openDraw传入target，currentTarget两个参数，具体由父组件决定onOpenDraw如何实现
+  this.lockedShow = onOpenDraw(target, currentTarget);
+},
 ```
 
 父组件传入的函数如下，关于事件委托的知识感觉可以应用在这里，笔者做一个示例，让`class='control-0'`的元素不能点击。

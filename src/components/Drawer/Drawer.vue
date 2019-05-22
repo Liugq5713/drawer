@@ -143,6 +143,7 @@ export default {
       }
       const target = evt.target;
       const currentTarget = evt.currentTarget;
+      console.log("currentTarget", currentTarget);
       this.lockedShow = onOpenDraw(target, currentTarget);
     },
     closeDrawerByControl() {
