@@ -141,6 +141,44 @@ transition: opacity 0.3s cubic-bezier(0.7, 0.3, 0.1, 1);
 
 ```
 
+## 处理抽屉的打开关闭
+
+抽屉组件支持了mouseover和click事件，开发的时候，遇到一个比较麻烦的问题。当抽屉以mouseover触发，鼠标移到控件上的时候，抽屉会很鬼畜的打开收起打开收起。（因为鼠标在控件上，mouseover事件不断的被触发，导致抽屉的打开和收起，）
+
+面对这种情况，我一开始就想到了防抖和节流。但其实都是不适合的。
+
+节流的原理很简单：
+
+如果你持续触发事件，每隔一段时间，只执行一次事件。其执行事件是异步的，那么当我打开抽屉，然后将鼠标移到抽屉外（移到抽屉外会关闭抽屉），会导致抽屉关闭之后又开起
+
+防抖：
+
+你尽管触发事件，但是我一定在事件触发 n 秒后才执行，如果你在一个事件触发的 n 秒内又触发了这个事件，那我就以新的事件的时间为准，n 秒后才执行，总之，就是要等你触发完事件 n 秒内不再触发事件，我才执行。使用防抖也会存在节流的问题，并且防抖由于是在一个事件触发n秒之后才执行，导致组件有一种反应慢的感觉。
+
+这两种方案都不适合，我想了好久想了一种方案（不知道叫什么，暂且叫它赋值锁吧）
+
+因为抽屉的打开和关闭都是由`show`变量控制。我们换一种思路， 那么当`show`值变化时，我们锁住`show`值，n秒内不允许修改，即控制住了抽屉的开合。n秒后才可以修改。我们使用计算属性实现如下：
+
+```js
+// this.lock 初始值为undefine
+lockedShow: {
+    get() {
+      return this.show;
+    },
+    set(val) {
+      if (this.lock) {
+        return;
+      } else {
+        // 200毫秒之后解除赋值锁
+        this.lock = setTimeout(() => {
+          this.lock = undefined;
+        }, 200);
+        this.show = val;
+      }
+    }
+}
+```
+
 ## openDrawer 钩子
 
 函数`openDrawer`通过 prop 传入，`openDrawer`控制是否抽屉被打开。
@@ -182,7 +220,7 @@ openDrawerByControl(evt) {
 
 父组件传入的函数如下，关于事件委托的知识感觉可以应用在这里，笔者做一个示例，让`class='control-0'`的元素不能点击。
 
-我们使用 [Element.matches](https://developer.mozilla.org/en-US/docs/Web/API/Element/matches) 匹配`.control-0`类，其可以像 CSS 选择器做更加灵活的匹配。但因为 li 元素里面可能还有其他元素，所以需要
+我们使用 [Element.matches](https://developer.mozilla.org/en-US/docs/Web/API/Element/matches) 匹配`.control-0`类，其可以像 CSS 选择器做更加灵活的匹配。但因为 li 元素里面可能还有其他元素，所以需要向上寻找其父元素，直到匹配到我们事件委托的元素位置
 
 ```js
 openDrawer(target, currentTarget) {
