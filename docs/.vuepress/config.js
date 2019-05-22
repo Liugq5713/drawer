@@ -12,7 +12,7 @@ module.exports = {
     docsBranch: 'master',
     editLinks: true,
     editLinkText: '帮助我修改页面',
-    sidebar: ['doc', '/article'],
+    sidebar: ['doc', '/article', '/demo'],
     sidebarDepth: 2
   }
 }

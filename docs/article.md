@@ -145,11 +145,10 @@ transition: opacity 0.3s cubic-bezier(0.7, 0.3, 0.1, 1);
 
 ### 点击抽屉外部分收起
 
-作为一个优秀的组件，我们支持当抽屉打开后，点击抽屉外部分收起。
+这里我们通过 Element.closest() 方法用来获取点击的祖先元素（匹配特定选择器且离当前元素最近的祖先元素，也可以是当前元素本身）。如果匹配不到，则返回 null。
 
 ```js
 closeSidebar(evt) {
-  // Element.closest() 方法用来获取：匹配特定选择器且离当前元素最近的祖先元素（也可以是当前元素本身）。如果匹配不到，则返回 null。
   const parent = evt.target.closest(".drawer");
   // 点击抽屉以外部分，即匹配不到，parent值为null
   if (!parent) {
@@ -183,21 +182,21 @@ window.addEventListener('click', this.closeSidebar)
 
 ### 处理抽屉的打开关闭
 
-抽屉组件支持了mouseover和click事件，开发的时候，遇到一个比较麻烦的问题。当抽屉以mouseover触发，鼠标移到控件上的时候，抽屉会很鬼畜的打开收起打开收起。（因为鼠标在控件上，mouseover事件不断的被触发，导致抽屉的打开和收起，）
+抽屉组件支持了 mouseover 和 click 事件，开发的时候，遇到一个比较麻烦的问题。当抽屉以 mouseover 触发，鼠标移到控件上的时候，抽屉会很鬼畜的打开收起打开收起。（因为鼠标在控件上，mouseover 事件不断的被触发，导致抽屉的打开和收起，）
 
 面对这种情况，我一开始就想到了防抖和节流。但其实都是不适合的。
 
-节流的原理很简单：
+> 节流的原理：如果你持续触发事件，每隔一段时间，只执行一次事件。
 
-如果你持续触发事件，每隔一段时间，只执行一次事件。其执行事件是异步的，那么当我打开抽屉，然后将鼠标移到抽屉外（移到抽屉外会关闭抽屉），会导致抽屉关闭之后又开起
+其执行事件是异步的，那么当我打开抽屉，然后将鼠标移到抽屉外（移到抽屉外会关闭抽屉），会导致抽屉关闭之后又开起
 
-防抖：
+> 防抖的原理：你尽管触发事件，但是我一定在事件触发 n 秒后才执行，如果你在一个事件触发的 n 秒内又触发了这个事件，那我就以新的事件的时间为准，n 秒后才执行，总之，就是要等你触发完事件 n 秒内不再触发事件，我才执行。
 
-你尽管触发事件，但是我一定在事件触发 n 秒后才执行，如果你在一个事件触发的 n 秒内又触发了这个事件，那我就以新的事件的时间为准，n 秒后才执行，总之，就是要等你触发完事件 n 秒内不再触发事件，我才执行。使用防抖也会存在节流的问题，并且防抖由于是在一个事件触发n秒之后才执行，导致组件有一种反应慢的感觉。
+使用防抖也会存在节流的问题，并且防抖由于是在一个事件触发 n 秒之后才执行，导致组件有一种反应慢的感觉。
 
 这两种方案都不适合，我想了好久想了一种方案（不知道叫什么，暂且叫它赋值锁吧）
 
-因为抽屉的打开和关闭都是由`show`变量控制。我们换一种思路， 那么当`show`值变化时，我们锁住`show`值，n秒内不允许修改，即控制住了抽屉的开合。n秒后才可以修改。我们使用计算属性实现如下：
+因为抽屉的打开和关闭都是由`show`变量控制。我们换一种思路， 那么当`show`值变化时，我们锁住`show`值，n 秒内不允许修改，即控制住了抽屉的开合。n 秒后才可以修改。我们使用计算属性实现如下：
 
 ```js
 // this.lock 初始值为undefine
@@ -219,7 +218,7 @@ lockedShow: {
 }
 ```
 
-###  通过openDrawer 钩子控制抽屉打开
+### 通过 openDrawer 钩子控制抽屉打开
 
 函数`openDrawer`通过 prop 传入，`openDrawer`控制是否抽屉被打开。
 
@@ -255,7 +254,7 @@ openDrawerByControl(evt) {
   const currentTarget = evt.currentTarget;
   // 我们给openDraw传入target，currentTarget两个参数，具体由父组件决定onOpenDraw如何实现
   this.lockedShow = onOpenDraw(target, currentTarget);
-},
+}
 ```
 
 父组件传入的函数如下，关于事件委托的知识感觉可以应用在这里，笔者做一个示例，让`class='control-0'`的元素不能点击。
@@ -263,10 +262,10 @@ openDrawerByControl(evt) {
 我们使用 [Element.matches](https://developer.mozilla.org/en-US/docs/Web/API/Element/matches) 匹配`.control-0`类，其可以像 CSS 选择器做更加灵活的匹配。但因为 li 元素里面可能还有其他元素，所以需要向上寻找其父元素，直到匹配到我们事件委托的元素位置
 
 ```js
-openDrawer(target, currentTarget) {
+openDrawer(target) {
   let shouldOpen = true;
    // 仅遍历到最外层
-  while (target !== currentTarget) {
+  while (!target.matches(".controls")) {
     // 判断是否匹配到我们所需要的元素上
     if (target.matches(".control-0")) {
       shouldOpen = false;
@@ -280,7 +279,11 @@ openDrawer(target, currentTarget) {
 }
 ```
 
+## 总结
 
+- 用到了很多 Element 的方法（eg：closest，matches），平时很少接触
+- CSS 真难写，作为一个写后台的，不经常写 CSS 的表示好难，这里费了最多的功夫
+- 实践了自己之前[写好一个组件的文章](https://juejin.im/post/5cdacf96e51d453ae110543b)，知易行难，还需努力
 
 ## 参考文章
 
@@ -289,3 +292,4 @@ openDrawer(target, currentTarget) {
 - [作用域插槽](https://cn.vuejs.org/v2/guide/components-slots.html#%E4%BD%9C%E7%94%A8%E5%9F%9F%E6%8F%92%E6%A7%BD)
 - [JavaScript 专题之跟着 underscore 学防抖](https://github.com/mqyqingfeng/Blog/issues/22)
 - [JavaScript 专题之跟着 underscore 学节流](https://github.com/mqyqingfeng/Blog/issues/26)
+- [如何写好一个 vue 组件](https://juejin.im/post/5cdacf96e51d453ae110543b)

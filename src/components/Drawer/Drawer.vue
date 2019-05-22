@@ -3,7 +3,11 @@
     <div class="drawer__container-bg"/>
     <div ref="drawer" class="drawer">
       <div class="controls__container" ref="controls__container">
-        <ul class="controls" @click="toggleDrawerShow" @mouseover="toggleDrawerShowByMouseover">
+        <ul
+          class="controls"
+          @click="toggleDrawerShowByClick"
+          @mouseover="toggleDrawerShowByMouseover"
+        >
           <li
             v-for="(control,idx) in controlItems"
             class="control"
@@ -79,6 +83,10 @@ export default {
       } else {
         document.body.classList.remove("hidden_scoll_bar");
       }
+
+      this.$nextTick(() => {
+        this.updateControlLayout();
+      });
     }
   },
   computed: {
@@ -126,7 +134,7 @@ export default {
     this.removeCloseSidebarListener();
   },
   methods: {
-    toggleDrawerShow(evt) {
+    toggleDrawerShowByClick(evt) {
       if (this.triggerEvent !== "click") {
         return;
       }
@@ -137,9 +145,6 @@ export default {
         return;
       }
       this.show ? this.closeDrawerByControl() : this.openDrawerByControl(evt);
-      this.$nextTick(() => {
-        this.updateControlLayout();
-      });
     },
     openDrawerByControl(evt) {
       const onOpenDraw = this.openDrawer;
@@ -159,9 +164,6 @@ export default {
       if (!parent) {
         this.closeDrawerByControl();
         this.removeCloseSidebarListener();
-        this.$nextTick(() => {
-          this.updateControlLayout();
-        });
       }
     },
     addCloseSidebarListener() {
