@@ -3,7 +3,7 @@
     position="right"
     :openDrawer="openDrawer"
     :controls="controls"
-    controlOffset="300px"
+    controlOffset="200px"
     contentSize="400px"
     triggerEvent="mouseover"
     class="demo"
