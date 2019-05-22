@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { isArray, throttle } from "../../utils";
+import { setTimeout } from "timers";
 export default {
   props: {
     triggerEvent: {
@@ -70,6 +70,7 @@ export default {
   },
   watch: {
     show(value) {
+      console.log("watch", value);
       if (value && !this.clickNotClose) {
         this.addCloseSidebarListener();
       }
@@ -82,7 +83,7 @@ export default {
   },
   computed: {
     controlItems() {
-      if (isArray(this.controls)) {
+      if (Array.isArray(this.controls)) {
         return this.controls;
       } else {
         return [this.controls];
@@ -100,11 +101,7 @@ export default {
     }
     this.updateControlLayout();
   },
-  created() {
-    this.toggleDrawerShowByMouseover = throttle(
-      this.toggleDrawerShowByMouseover
-    );
-  },
+  created() {},
   destroyed() {
     this.removeCloseSidebarListener();
   },
@@ -121,10 +118,11 @@ export default {
       if (this.triggerEvent !== "mouseover") {
         return;
       }
-      console.log("evt", evt);
+      console.log("------evt start-----", this.show);
       this.show = this.show
         ? this.closeDrawerByControl()
         : this.openDrawerByControl(evt);
+      console.log("evt end", this.show);
       this.$nextTick(() => {
         this.updateControlLayout();
       });
@@ -144,11 +142,13 @@ export default {
     closeSidebar(evt) {
       const parent = evt.target.closest(".drawer");
       if (!parent) {
-        this.show = false;
+        setTimeout(() => {
+          this.show = false;
+        }, 500);
+        this.removeCloseSidebarListener();
         this.$nextTick(() => {
           this.updateControlLayout();
         });
-        this.removeCloseSidebarListener();
       }
     },
     addCloseSidebarListener() {
