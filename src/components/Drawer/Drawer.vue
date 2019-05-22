@@ -278,10 +278,10 @@ export default {
 }
 
 .controls {
-  list-style: none;
-  padding: 0;
-  margin: 0;
   display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .control {
