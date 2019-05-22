@@ -65,12 +65,12 @@ export default {
   data() {
     return {
       show: false,
-      positionClass: this.position
+      positionClass: this.position,
+      lock: undefined
     };
   },
   watch: {
     show(value) {
-      console.log("watch", value);
       if (value && !this.clickNotClose) {
         this.addCloseSidebarListener();
       }
@@ -88,6 +88,21 @@ export default {
       } else {
         return [this.controls];
       }
+    },
+    lockedShow: {
+      get() {
+        return this.show;
+      },
+      set(val) {
+        if (this.lock) {
+          return;
+        } else {
+          this.lock = setTimeout(() => {
+            this.lock = undefined;
+          }, 200);
+          this.show = val;
+        }
+      }
     }
   },
   mounted() {
@@ -101,7 +116,6 @@ export default {
     }
     this.updateControlLayout();
   },
-  created() {},
   destroyed() {
     this.removeCloseSidebarListener();
   },
@@ -110,19 +124,13 @@ export default {
       if (this.triggerEvent !== "click") {
         return;
       }
-      this.show = this.show
-        ? this.closeDrawerByControl()
-        : this.openDrawerByControl(evt);
+      this.show ? this.closeDrawerByControl() : this.openDrawerByControl(evt);
     },
     toggleDrawerShowByMouseover(evt) {
       if (this.triggerEvent !== "mouseover") {
         return;
       }
-      console.log("------evt start-----", this.show);
-      this.show = this.show
-        ? this.closeDrawerByControl()
-        : this.openDrawerByControl(evt);
-      console.log("evt end", this.show);
+      this.show ? this.closeDrawerByControl() : this.openDrawerByControl(evt);
       this.$nextTick(() => {
         this.updateControlLayout();
       });
@@ -130,21 +138,20 @@ export default {
     openDrawerByControl(evt) {
       const onOpenDraw = this.openDrawer;
       if (!onOpenDraw) {
-        return true;
+        this.lockedShow = true;
+        return;
       }
       const target = evt.target;
       const currentTarget = evt.currentTarget;
-      return onOpenDraw(target, currentTarget);
+      this.lockedShow = onOpenDraw(target, currentTarget);
     },
     closeDrawerByControl() {
-      return false;
+      this.lockedShow = false;
     },
     closeSidebar(evt) {
       const parent = evt.target.closest(".drawer");
       if (!parent) {
-        setTimeout(() => {
-          this.show = false;
-        }, 500);
+        this.closeDrawerByControl();
         this.removeCloseSidebarListener();
         this.$nextTick(() => {
           this.updateControlLayout();

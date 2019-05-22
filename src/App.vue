@@ -60,7 +60,6 @@ export default {
           target = target.parentNode;
         }
       }
-      console.log("shouldOpen", shouldOpen);
       return shouldOpen;
     }
   }
