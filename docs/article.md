@@ -141,7 +141,47 @@ transition: opacity 0.3s cubic-bezier(0.7, 0.3, 0.1, 1);
 
 ```
 
-## 处理抽屉的打开关闭
+## 抽屉开合
+
+### 点击抽屉外部分收起
+
+作为一个优秀的组件，我们支持当抽屉打开后，点击抽屉外部分收起。
+
+```js
+closeSidebar(evt) {
+  // Element.closest() 方法用来获取：匹配特定选择器且离当前元素最近的祖先元素（也可以是当前元素本身）。如果匹配不到，则返回 null。
+  const parent = evt.target.closest(".drawer");
+  // 点击抽屉以外部分，即匹配不到，parent值为null
+  if (!parent) {
+    this.show = false;
+  }
+}
+```
+
+全局监听点击事件
+
+```js
+window.addEventListener('click', this.closeSidebar)
+```
+
+我一开始的做法是，组件挂载的时候，全局监听点击事件，组件销毁时移除点击事件。但我们可以做的更好，当 controls 被点击时，添加点击事件，收起抽屉的时候，移除点击事件。减少全局监听的 click 事件。
+
+除了点击事件，我们也顺便支持一下 hover 的操作。鼠标移出收起的操作和点击抽屉外部分收起的代码相同。
+
+通过`e.type`判断是点击事件还是鼠标移入事件。
+
+```js
+ toggleDrawerShow(e) {
+    if (e.type === "mouseover" && this.triggerEvent === "mouseover") {
+      // do some thing
+    }
+    if (e.type === "click" && this.triggerEvent === "click") {
+      // do some thing
+    }
+}
+```
+
+### 处理抽屉的打开关闭
 
 抽屉组件支持了mouseover和click事件，开发的时候，遇到一个比较麻烦的问题。当抽屉以mouseover触发，鼠标移到控件上的时候，抽屉会很鬼畜的打开收起打开收起。（因为鼠标在控件上，mouseover事件不断的被触发，导致抽屉的打开和收起，）
 
@@ -179,7 +219,7 @@ lockedShow: {
 }
 ```
 
-## openDrawer 钩子
+###  通过openDrawer 钩子控制抽屉打开
 
 函数`openDrawer`通过 prop 传入，`openDrawer`控制是否抽屉被打开。
 
@@ -240,43 +280,7 @@ openDrawer(target, currentTarget) {
 }
 ```
 
-## 事件
 
-作为一个优秀的组件，我们支持当抽屉打开后，点击抽屉外部分收起。
-
-```js
-closeSidebar(evt) {
-  // Element.closest() 方法用来获取：匹配特定选择器且离当前元素最近的祖先元素（也可以是当前元素本身）。如果匹配不到，则返回 null。
-  const parent = evt.target.closest(".drawer");
-  // 点击抽屉以外部分，即匹配不到，parent值为null
-  if (!parent) {
-    this.show = false;
-  }
-}
-```
-
-全局监听点击事件
-
-```js
-window.addEventListener('click', this.closeSidebar)
-```
-
-我一开始的做法是，组件挂载的时候，全局监听点击事件，组件销毁时移除点击事件。但我们可以做的更好，当 controls 被点击时，添加点击事件，收起抽屉的时候，移除点击事件。减少全局监听的 click 事件。
-
-除了点击事件，我们也顺便支持一下 hover 的操作。鼠标移出收起的操作和点击抽屉外部分收起的代码相同。
-
-通过`e.type`判断是点击事件还是鼠标移入事件。
-
-```js
- toggleDrawerShow(e) {
-    if (e.type === "mouseover" && this.triggerEvent === "mouseover") {
-      // do some thing
-    }
-    if (e.type === "click" && this.triggerEvent === "click") {
-      // do some thing
-    }
-}
-```
 
 ## 参考文章
 
