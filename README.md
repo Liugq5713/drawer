@@ -1,6 +1,6 @@
 # 抽屉（drawer）组件
 
-a vue ui component ，[项目预览DEMO地址](https://so-easy.cc/drawer/demo.html)
+[项目预览DEMO地址](https://so-easy.cc/drawer/demo.html)
 
 ## drawer 属性
 
