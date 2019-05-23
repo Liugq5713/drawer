@@ -111,6 +111,12 @@ export default {
           this.show = val;
         }
       }
+    },
+    isHorizontal() {
+      return ["left", "right"].includes(this.position);
+    },
+    isVertical() {
+      return ["botom", "top"].includes(this.position);
     }
   },
   mounted() {
@@ -120,11 +126,11 @@ export default {
     if (typeof this.contentSize === "number") {
       this.contentSize = `${this.contentSize}px`;
     }
-    if (["top", "bottom"].includes(this.position)) {
+    if (this.isVertical) {
       this.$refs["controls__container"].style["left"] = this.controlOffset;
       this.$refs["drawer"].style.maxHeight = this.contentSize;
     }
-    if (["left", "right"].includes(this.position)) {
+    if (this.isHorizontal) {
       this.$refs["controls__container"].style["top"] = this.controlOffset;
       this.$refs["drawer"].style.maxWidth = this.contentSize;
     }
