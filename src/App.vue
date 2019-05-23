@@ -18,6 +18,7 @@
     <Drawer
       position="right"
       :controls="controls"
+      :openDrawer="openDrawer"
       controlOffset="30vh"
       contentSize="300px"
     >Lorem ipsum dolor sit amet consectetur, adipisicing elit. Autem iste non cupiditate harum, minima rerum omnis consequatur sequi sed inventore quae consequuntur fuga asperiores dolore esse, amet facere, similique laborum?</Drawer>

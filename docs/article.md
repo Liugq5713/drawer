@@ -2,15 +2,15 @@
 
 ## 项目展示
 
- <img src="https://wpimg.wallstcn.com/371a2bc1-3e50-431f-9f90-b3b701e1bbed.png" width = "400px"  align=center />
+![项目展示](https://wpimg.wallstcn.com/bf113fb1-197d-4cc3-811f-8eb732b6d08a.gif)
 
-本文章以抽屉组件为例子，如果我代码写的不好，欢迎提 PR，[项目地址](https://github.com/Liugq5713/drawer)，[项目 demo 地址](https://so-easy.cc/drawer/demo.html)
+本文章以抽屉组件为例子，有不好或者不完善的地方，欢迎在评论区指出或者提 PR，[项目地址](https://github.com/Liugq5713/drawer)，[项目 demo 地址](https://so-easy.cc/drawer/demo.html)
 
-首先，我们想象一下用户会如何使用我们的组件，它可能需要哪些自定义的功能，比如内容的宽度，控件的位置，抽屉的位置，控件样式自定义等等，可能的交互比如：点击控件/鼠标悬浮打开抽屉，点击抽屉外部收起抽屉等等，接着我们判断一下哪些是需要暴露给外部组件的，哪些是属于组件内部的状态，尽可能的做到这个组件职责单一，从这些个角度出发，来编写我们的代码
+我们想象一下用户会如何使用我们的组件，它可能需要哪些自定义的功能，比如内容的宽度，控件的位置，抽屉的位置，控件样式自定义等等，可能的交互比如：点击控件/鼠标悬浮打开抽屉，点击抽屉外部收起抽屉等等，接着我们判断一下哪些是需要暴露给外部组件的，哪些是属于组件内部的状态，尽可能的做到这个组件职责单一，且遵循最少知识原则。从这些个角度出发，来编写我们的代码
 
 ## 设计
 
-首先，这个组件有个通用的名字，叫抽屉（Drawer），组件结构分为控件和内容两部分。如图：
+这个组件有个通用的名字，叫抽屉（Drawer），组件结构分为控件和内容两部分。如图：
 
 ```text
            +-----------------------+
@@ -28,7 +28,7 @@ controls   |                       |
            +-----------------------+
 ```
 
-不以规矩，不成方圆。HTML 有语义化标签，CSS 有 BEM 规范，这些规范都帮助我们写出结构清晰的 HTML 架构（ps:布局部分使用语义化标签还挺适合的，这种局部小组件还是 div 一把梭了）。组件 HTML 结构如下：
+不以规矩，不成方圆。HTML 有语义化标签，CSS 有 BEM 规范，这些帮助我们写出结构清晰的 HTML 架构（ps:布局部分使用语义化标签还挺适合的，这种局部小组件还是 div 一把梭了）。组件 HTML 结构如下：
 
 ```html
 <div class="drawer-container">
@@ -85,7 +85,7 @@ controls   |                       |
 
 ### 处理抽屉的打开关闭
 
-抽屉组件支持了 mouseover 和 click 事件，开发的时候，遇到一个比较麻烦的问题。当抽屉以 mouseover 触发，鼠标移到控件上的时候，抽屉会很鬼畜的打开收起打开收起。（因为鼠标在控件上，mouseover 事件不断的被触发，导致抽屉的打开和收起）
+抽屉组件支持了 mouseover 和 click 事件，开发的时候，遇到一个比较麻烦的问题：当抽屉以 mouseover 触发，鼠标移到控件上的时候，抽屉会很鬼畜的打开收起打开收起。（因为鼠标在控件上，mouseover 事件不断的被触发，导致抽屉的打开和收起）
 
 面对这种情况，我一开始就想到了防抖和节流。但其实直接拿来用是不适合的
 
@@ -176,9 +176,9 @@ updateControlLayout() {
 }
 ```
 
-### 抽屉开合动画
+### 动画
 
-[贝塞尔曲线](https://developer.mozilla.org/en-US/docs/Web/CSS/timing-function)了解一下
+主要是蒙层的显影，以及抽屉的开合。CSS动画[贝塞尔曲线](https://developer.mozilla.org/en-US/docs/Web/CSS/timing-function)了解一下，笔者自己也了解不多，感兴趣可以自己去看。
 
 ```css
 transition: opacity 0.3s cubic-bezier(0.7, 0.3, 0.1, 1);
@@ -186,10 +186,12 @@ transition: opacity 0.3s cubic-bezier(0.7, 0.3, 0.1, 1);
 
 ### 滚动条
 
-当内容过长的时候，打开抽屉的时候，滚动条还在。因此我们需要在抽屉打开的时候打开滚动条。代码也很好写，给`document.body`添加`overflow:hidden`属性。这里有一个小小的坑。原先的 css 是置于 scope 里面的，如果想要把这个属性添加到 body 上，是不成功的。把 scoped 去了即可。
+当内容过长的时候，打开抽屉的时候，滚动条还在。因此我们需要在抽屉打开的时候打开滚动条。代码也很好写，给`document.body`添加`overflow:hidden`属性。
+
+这里有一个小小的坑。原先的 css 是置于 scope 里面的，如果想要把这个属性添加到 body 上，是不成功的。把 scoped 去了即可。
 
 ```css
-<style scoped>
+<style>
 .hidden_scoll_bar{
   overflow: hidden;
 }
@@ -333,3 +335,4 @@ openDrawer(target) {
 - [JavaScript 专题之跟着 underscore 学防抖](https://github.com/mqyqingfeng/Blog/issues/22)
 - [JavaScript 专题之跟着 underscore 学节流](https://github.com/mqyqingfeng/Blog/issues/26)
 - [如何写好一个 vue 组件](https://juejin.im/post/5cdacf96e51d453ae110543b)
+
