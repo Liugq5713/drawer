@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <!-- <Drawer
+    <Drawer
       position="top"
       :openDrawer="openDrawer"
       :controls="controls"
@@ -14,7 +14,7 @@
           <div v-else>{{drawer.control.show}}</div>
         </div>
       </template>
-    </Drawer>-->
+    </Drawer>
     <Drawer
       position="right"
       :controls="controls"
@@ -22,9 +22,9 @@
       controlOffset="30vh"
       contentSize="300px"
     >Lorem ipsum dolor sit amet consectetur, adipisicing elit. Autem iste non cupiditate harum, minima rerum omnis consequatur sequi sed inventore quae consequuntur fuga asperiores dolore esse, amet facere, similique laborum?</Drawer>
-    <!-- <Drawer position="bottom" triggerEvent="mouseover" controlOffset="300px" contentSize="200px"/>
+    <Drawer position="bottom" triggerEvent="mouseover" controlOffset="300px" contentSize="200px"/>
     <Drawer position="left" controlOffset="300px" contentSize="200px"/>
-    <div style="height:1000px;width:100px"></div>-->
+    <div style="height:1000px;width:100px"></div>
   </div>
 </template>
 
