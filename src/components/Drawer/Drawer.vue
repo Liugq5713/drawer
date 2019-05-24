@@ -15,10 +15,10 @@
             :key="idx"
           >
             <template v-if="show">
-              <slot name="control" v-bind:drawer="{drawerShow:show,control}">{{control.hidden}}</slot>
+              <slot name="control" v-bind:drawer="{show,control}">{{control.hidden}}</slot>
             </template>
             <template v-else>
-              <slot name="control" v-bind:drawer="{drawerShow:show,control}">{{control.show}}</slot>
+              <slot name="control" v-bind:drawer="{show,control}">{{control.show}}</slot>
             </template>
           </li>
         </ul>
@@ -120,19 +120,21 @@ export default {
     }
   },
   mounted() {
-    if (typeof this.controlOffset === "number") {
-      this.controlOffset = `${this.controlOffset}px`;
+    let controlOffset = this.controlOffset;
+    let contentSize = this.contentSize;
+    if (typeof controlOffset === "number") {
+      controlOffset = `${controlOffset}px`;
     }
-    if (typeof this.contentSize === "number") {
-      this.contentSize = `${this.contentSize}px`;
+    if (typeof contentSize === "number") {
+      contentSize = `${contentSize}px`;
     }
     if (this.isVertical) {
-      this.$refs["controls__container"].style["left"] = this.controlOffset;
-      this.$refs["drawer"].style.maxHeight = this.contentSize;
+      this.$refs["controls__container"].style["left"] = controlOffset;
+      this.$refs["drawer"].style.maxHeight = contentSize;
     }
     if (this.isHorizontal) {
-      this.$refs["controls__container"].style["top"] = this.controlOffset;
-      this.$refs["drawer"].style.maxWidth = this.contentSize;
+      this.$refs["controls__container"].style["top"] = controlOffset;
+      this.$refs["drawer"].style.maxWidth = contentSize;
     }
     this.updateControlLayout();
   },

@@ -10,7 +10,7 @@
   >
     <template v-slot:control="{drawer}">
       <div class="button margin-left--10">
-        <div v-if="drawer.drawerShow" class="vertical">{{drawer.control.hidden}}</div>
+        <div v-if="drawer.show" class="vertical">{{drawer.control.hidden}}</div>
         <div v-else class="vertical">{{drawer.control.show}}</div>
       </div>
     </template>
