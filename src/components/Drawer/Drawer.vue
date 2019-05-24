@@ -116,7 +116,7 @@ export default {
       return ["left", "right"].includes(this.position);
     },
     isVertical() {
-      return ["botom", "top"].includes(this.position);
+      return ["bottom", "top"].includes(this.position);
     }
   },
   mounted() {
@@ -168,7 +168,7 @@ export default {
     closeSidebar(evt) {
       const parent = evt.target.closest(".drawer");
       if (!parent) {
-        this.closeDrawerByControl();
+        this.show = false;
         this.removeCloseSidebarListener();
       }
     },
